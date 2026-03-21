@@ -9,7 +9,6 @@ export const projects: Project[] = [
     tech: ['PyTorch', 'CUDA', 'DMControl', 'Atari', 'JAX'],
     github: 'https://github.com/SaurabhJalendra/Quantum-Enhanced-Simulation-Learning-for-Reinforcement-Learning',
     featured: true,
-    image: '/projects/quantum-rl.webp',
     category: 'research',
   },
   {
@@ -20,7 +19,6 @@ export const projects: Project[] = [
     tech: ['JAX', 'Equinox', 'PySR', 'SINDy', 'Python'],
     github: 'https://github.com/SaurabhJalendra/Simulating-Anything',
     featured: true,
-    image: '/projects/simulating-anything.webp',
     category: 'research',
   },
   {
@@ -31,7 +29,6 @@ export const projects: Project[] = [
     tech: ['Next.js', 'TypeScript', 'FastAPI', 'LlamaIndex', 'PostgreSQL', 'Docker'],
     github: 'https://github.com/SaurabhJalendra/skinDB-ai',
     featured: true,
-    image: '/projects/skindb.webp',
     category: 'fullstack',
   },
   {
@@ -42,18 +39,16 @@ export const projects: Project[] = [
     tech: ['React', 'TypeScript', 'FastAPI', 'Claude API', 'PostgreSQL', 'Docker'],
     github: 'https://github.com/SaurabhJalendra/Analyst_agentic_coder',
     featured: true,
-    image: '/projects/analyst-coder.webp',
     category: 'agents',
   },
   {
     id: 'skai',
-    title: 'SKAI — Multi-Agent System',
+    title: 'SKAI \u2014 Multi-Agent System',
     description: 'Sentient Kernel Adaptive Intelligence: multi-agent AI with task decomposition and self-improvement.',
     longDescription: 'Multi-agent AI assistant with orchestrated execution. Agents: Communicator, Planner, Research, Coding, Critic, Voice, Self-Improving. Uses semantic memory via ChromaDB.',
     tech: ['Python', 'LangChain', 'ChromaDB', 'Streamlit', 'OpenRouter'],
     github: 'https://github.com/SaurabhJalendra/Multi-Model-System',
     featured: false,
-    image: '/projects/skai.webp',
     category: 'agents',
   },
   {
@@ -64,7 +59,6 @@ export const projects: Project[] = [
     tech: ['PyTorch', 'NumPy', 'scikit-learn', 'Matplotlib'],
     github: 'https://github.com/SaurabhJalendra/GravitationalLens-MultimodalDL',
     featured: false,
-    image: '/projects/gravitational-lens.webp',
     category: 'ml',
   },
   {
@@ -75,7 +69,6 @@ export const projects: Project[] = [
     tech: ['TensorFlow', 'scikit-learn', 'SHAP', 'CTGAN', 'XGBoost'],
     github: 'https://github.com/SaurabhJalendra/Bank_fraud_detection',
     featured: false,
-    image: '/projects/fraud-detection.webp',
     category: 'ml',
   },
   {
@@ -86,7 +79,6 @@ export const projects: Project[] = [
     tech: ['Next.js', 'Node.js', 'Gemini AI', 'GitHub Actions', 'Vercel'],
     github: 'https://github.com/SaurabhJalendra/Email_daily_newsletter_summary',
     featured: false,
-    image: '/projects/newsletter.webp',
     category: 'fullstack',
   },
 ]

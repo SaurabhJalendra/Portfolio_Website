@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="900" cy="300" r="180" fill="none" stroke="url(#accent)" stroke-width="1" opacity="0.3"/>
+  <circle cx="900" cy="300" r="120" fill="none" stroke="url(#accent)" stroke-width="1" opacity="0.2"/>
+  <circle cx="900" cy="300" r="60" fill="url(#accent)" opacity="0.15"/>
+  <text x="80" y="260" font-family="system-ui, sans-serif" font-size="64" font-weight="700" fill="#f4f4f5">Saurabh Jalendra</text>
+  <text x="80" y="320" font-family="system-ui, sans-serif" font-size="28" font-weight="500" fill="#6366f1">AI/ML Researcher &amp; Engineer</text>
+  <text x="80" y="380" font-family="system-ui, sans-serif" font-size="18" fill="#71717a">BITS Pilani · SKY AI · Reinforcement Learning · World Models</text>
+  <rect x="80" y="420" width="120" height="3" fill="url(#accent)" rx="1.5"/>
+  <text x="80" y="540" font-family="system-ui, sans-serif" font-size="16" fill="#52525b">saurabhjalendra.com</text>
+</svg>
