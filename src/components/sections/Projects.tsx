@@ -21,6 +21,7 @@ export function Projects() {
       scrollTrigger: {
         trigger: '.projects-grid',
         start: 'top 80%',
+        toggleActions: 'play none none none',
       },
     })
   }, { scope: containerRef })

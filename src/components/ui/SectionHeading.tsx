@@ -22,6 +22,7 @@ export function SectionHeading({ number, title }: SectionHeadingProps) {
       scrollTrigger: {
         trigger: ref.current,
         start: 'top 85%',
+        toggleActions: 'play none none none',
       },
     })
   }, { scope: ref })

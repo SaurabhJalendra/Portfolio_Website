@@ -24,11 +24,11 @@ export function Skills() {
   useGSAP(() => {
     gsap.from('.skills-canvas', {
       opacity: 0, scale: 0.8, duration: 1, ease: 'power3.out',
-      scrollTrigger: { trigger: '.skills-canvas', start: 'top 80%' },
+      scrollTrigger: { trigger: '.skills-canvas', start: 'top 80%', toggleActions: 'play none none none' },
     })
     gsap.from('.legend-item', {
       x: -20, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out',
-      scrollTrigger: { trigger: '.skills-legend', start: 'top 85%' },
+      scrollTrigger: { trigger: '.skills-legend', start: 'top 85%', toggleActions: 'play none none none' },
     })
   }, { scope: containerRef })
 

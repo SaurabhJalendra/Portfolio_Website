@@ -1,10 +1,14 @@
 import { useState, useCallback, Suspense, lazy } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ReducedMotionProvider } from './components/ui/ReducedMotionProvider'
 import { Preloader } from './components/ui/Preloader'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
 import { SceneManager } from './components/3d/SceneManager'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const Hero = lazy(() => import('./components/sections/Hero').then(m => ({ default: m.Hero })))
 const About = lazy(() => import('./components/sections/About').then(m => ({ default: m.About })))
@@ -18,7 +22,13 @@ export function App() {
   const [loaded, setLoaded] = useState(false)
   useSmoothScroll()
 
-  const handleLoadComplete = useCallback(() => setLoaded(true), [])
+  const handleLoadComplete = useCallback(() => {
+    setLoaded(true)
+    // Give sections time to render, then refresh ScrollTrigger positions
+    setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 100)
+  }, [])
 
   return (
     <ReducedMotionProvider>

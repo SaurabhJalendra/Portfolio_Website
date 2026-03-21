@@ -13,7 +13,7 @@ export function Experience() {
   useGSAP(() => {
     gsap.from('.exp-card', {
       y: 50, opacity: 0, duration: 0.7, stagger: 0.2, ease: 'power3.out',
-      scrollTrigger: { trigger: '.exp-list', start: 'top 80%' },
+      scrollTrigger: { trigger: '.exp-list', start: 'top 80%', toggleActions: 'play none none none' },
     })
   }, { scope: containerRef })
 

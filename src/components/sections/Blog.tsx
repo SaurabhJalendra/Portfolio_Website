@@ -17,7 +17,7 @@ export function Blog() {
   useGSAP(() => {
     gsap.from('.blog-card', {
       y: 40, opacity: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out',
-      scrollTrigger: { trigger: '.blog-grid', start: 'top 80%' },
+      scrollTrigger: { trigger: '.blog-grid', start: 'top 80%', toggleActions: 'play none none none' },
     })
   }, { scope: containerRef })
 

@@ -39,6 +39,12 @@
   }
 }
 
+/* Ensure GSAP-animated elements are visible if JS fails or ScrollTrigger doesn't fire */
+.gsap-init {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

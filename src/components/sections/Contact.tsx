@@ -14,7 +14,7 @@ export function Contact() {
   useGSAP(() => {
     gsap.from('.contact-content', {
       y: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
-      scrollTrigger: { trigger: '.contact-content', start: 'top 85%' },
+      scrollTrigger: { trigger: '.contact-content', start: 'top 85%', toggleActions: 'play none none none' },
     })
   }, { scope: containerRef })
 
