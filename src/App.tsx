@@ -3,6 +3,7 @@ import { ReducedMotionProvider } from './components/ui/ReducedMotionProvider'
 import { Preloader } from './components/ui/Preloader'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
+import { SceneManager } from './components/3d/SceneManager'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 
 const Hero = lazy(() => import('./components/sections/Hero').then(m => ({ default: m.Hero })))
@@ -22,6 +23,7 @@ export function App() {
   return (
     <ReducedMotionProvider>
       {!loaded && <Preloader onComplete={handleLoadComplete} />}
+      {loaded && <SceneManager />}
       <Navbar />
       <main>
         <Suspense fallback={null}>
