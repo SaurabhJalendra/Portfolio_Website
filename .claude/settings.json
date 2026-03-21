@@ -1,0 +1,69 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npm create *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git add *)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git stash*)",
+      "Bash(gh *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(rm *.js)",
+      "Bash(rm *.ts)",
+      "Bash(rm *.tsx)",
+      "Bash(rm *.css)",
+      "Bash(rm *.json)",
+      "Bash(rm -r node_modules)",
+      "Bash(rm -r dist)",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf .git)",
+      "Edit(.env*)",
+      "Write(.env*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"try{const f=JSON.parse(process.env.TOOL_INPUT||'{}').file_path||'';if(/\\.(tsx?|jsx?|css|json)$/.test(f)){const{execSync}=require('child_process');execSync('npx prettier --write '+JSON.stringify(f),{stdio:'inherit'})}}catch{}\"",
+            "timeout": 10,
+            "statusMessage": "Formatting..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const f=(JSON.parse(process.env.TOOL_INPUT||'{}').file_path||'');if(/\\.env/.test(f)){console.error('BLOCKED: Do not edit .env files');process.exit(2)}\""
+          }
+        ]
+      }
+    ]
+  }
+}
