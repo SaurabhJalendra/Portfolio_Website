@@ -1,103 +1,114 @@
 ---
 name: blog
-description: Interactive blog post creation — scans activity, suggests topics, generates drafts, user picks what to publish
+description: Interactive blog post creation — reads your daily notes, suggests topics, generates 3 drafts, you pick what to publish
 ---
 
 # Blog Post Creator
 
-Interactive skill for creating blog posts. Scans GitHub activity and Claude Code sessions to suggest topics, generates multiple drafts, and publishes the one you choose.
+Interactive skill for creating blog posts. Reads your daily notes from `notes/`, optionally scans GitHub activity, generates multiple drafts, and publishes the one you choose.
 
 ## Workflow
 
-### Phase 1: Activity Scan & Topic Suggestions
+### Phase 1: Read Notes & Suggest Topics
 
-**Scan GitHub activity (last 7 days):**
+**Primary source — your notes:**
 ```bash
-# Recent commits across all repos
-gh api users/SaurabhJalendra/events --paginate --jq '.[] | select(.type == "PushEvent" or .type == "CreateEvent" or .type == "PullRequestEvent") | "\(.type): \(.repo.name) - \(.created_at)"' | head -30
-
-# Commits in this repo
-git log --since="7 days ago" --oneline --all
-
-# Recently updated repos
-gh api users/SaurabhJalendra/repos --jq 'sort_by(.pushed_at) | reverse | .[:10] | .[] | "\(.name) (pushed: \(.pushed_at | split("T")[0]))"'
+# Read recent notes (last 7 days)
+find notes/ -name "*.md" -newer notes/$(date -d '7 days ago' +%Y-%m-%d).md -type f 2>/dev/null | sort -r
+# Or just read the latest few
+ls -t notes/*.md | head -5
 ```
 
-**Scan Claude Code session history (if available):**
+Read all recent note files in `notes/` directory. These are the user's raw thoughts, daily logs, and observations.
+
+**Secondary source — GitHub activity (supplement only):**
 ```bash
-# Check recent Claude Code transcripts for topics discussed
-ls -lt ~/.claude/projects/*/sessions/ 2>/dev/null | head -10
-# Read recent session summaries for topic ideas
+gh api users/SaurabhJalendra/events --jq '.[] | select(.type == "PushEvent" or .type == "CreateEvent") | "\(.type): \(.repo.name) - \(.created_at)"' | head -15
+git log --since="7 days ago" --oneline --all --no-merges
 ```
 
-**Present findings to user:**
-Show a summary of recent activity, then suggest 3-5 blog topic ideas based on:
-- What repos were worked on and what changed
-- Interesting technical patterns or challenges encountered
-- Research progress or new experiments
-- Tools/libraries explored
-- Connections between different work streams
+**Combine and suggest:**
+Cross-reference notes with GitHub activity to find the most interesting topics. Present to user:
 
-Use AskUserQuestion to present topic options:
-- Option 1-4: Suggested topics from activity scan
-- User can also type their own topic
+1. Show a brief summary: "Here's what I found in your notes and GitHub"
+2. Suggest 3-4 blog topic ideas using AskUserQuestion
+3. Each suggestion should reference specific notes/activity
+4. User can pick one OR type their own topic
 
-### Phase 2: Draft Generation
+### Phase 2: Generate 3 Drafts
 
-Once the user picks a topic (or provides their own):
+Once topic is chosen, generate **3 draft variants**:
 
-Generate **3 draft variants** with different angles:
-1. **Technical deep-dive** — focused on the how, with code snippets
-2. **Narrative/story** — focused on the why, the journey, the lessons
-3. **Tutorial/educational** — focused on teaching the reader something
+1. **Technical deep-dive** — the how, with code snippets and implementation details
+2. **Narrative/story** — the why, the journey, lessons learned, what surprised you
+3. **Quick insight** — one focused takeaway, punchy and concise (300-400 words)
 
-Each draft should be 400-800 words with:
-- An engaging title
-- A 1-2 sentence summary
-- Relevant tags
-- Estimated read time
+Each draft must have:
+- Title
+- Summary (1-2 sentences)
+- Tags
+- Read time estimate
+- Full blog content
 
-Present all 3 drafts to the user using AskUserQuestion with previews showing the title, summary, and first few lines.
+Present all 3 using AskUserQuestion with **previews** showing:
+```
+Title: <title>
+Summary: <summary>
+---
+<first 5-6 lines of content>
+...
+```
 
-### Phase 3: Refinement & Publishing
+### Phase 3: Refine & Publish
 
 After user picks a draft:
 
-1. Ask if they want any changes (tone, length, details, code examples)
-2. Apply changes if requested
-3. Show final version for approval
+1. Show the full post
+2. Ask: "Any changes? (tone, add/remove details, code examples, length) Or approve to publish?"
+3. If changes requested → apply and show again
 4. On approval:
 
+**Create blog post file:** `src/data/blog/YYYY-MM-DD-<slug>.md`
+```markdown
+---
+title: "<title>"
+date: "YYYY-MM-DD"
+tags: ["tag1", "tag2"]
+summary: "<summary>"
+readTime: "<X min read>"
+---
+
+<blog content>
+```
+
+**Update blog index:** `src/data/blog/index.ts`
+Add metadata to `blogPosts` array (slug, title, date, tags, summary, readTime only — NOT content).
+
+**Commit:**
 ```bash
-# Create the blog post file
-# Filename: src/data/blog/YYYY-MM-DD-<slug>.md
-
-# Update src/data/blog/index.ts — add metadata to blogPosts array
-# Only metadata: slug, title, date, tags, summary, readTime
-# Do NOT put content in index.ts
-
-# Commit
 git add src/data/blog/
 git commit -m "blog: YYYY-MM-DD - <title>"
 ```
 
-5. Ask if they want to push to deploy
+5. Ask: "Push to deploy?"
 
-## Writing Style Guidelines
+## Notes Format
+
+Users write daily notes in `notes/YYYY-MM-DD.md`. Any format works:
+- Bullet points
+- Stream of consciousness
+- Code snippets they found interesting
+- Links to papers or articles
+- Questions they're exploring
+- Problems they solved
+
+The messier the better — this skill's job is to turn raw notes into polished posts.
+
+## Writing Style
 - **Tone**: Technical but approachable. Like explaining to a smart friend.
-- **Length**: 400-800 words. Quality over quantity.
+- **Length**: 400-800 words (quick insight: 300-400 words)
 - **Structure**: Hook → Context → Technical insight → What's next
-- **Include**: Code snippets when relevant, but explain them
+- **Voice**: First person as Saurabh ("I built...", "I discovered...", "What surprised me...")
 - **Avoid**: Generic fluff, buzzword salads, "In this blog post I will..."
-- **Personality**: Show curiosity and genuine excitement about the work
-- **First person**: Write as Saurabh ("I built...", "I discovered...", "What surprised me was...")
-
-## Quality Checklist
-Before presenting to user, verify each draft:
-- [ ] Title is compelling (would you click it?)
-- [ ] Summary works as a standalone preview
-- [ ] Tags are relevant
-- [ ] Opening line hooks the reader
-- [ ] Post teaches the reader something
-- [ ] No filler or fluff
-- [ ] Code snippets (if any) are explained
+- **Include**: Code when relevant, but explain it
+- **Personality**: Curious, excited, honest about what worked and what didn't
