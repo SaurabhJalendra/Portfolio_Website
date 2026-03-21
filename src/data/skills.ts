@@ -1,0 +1,28 @@
+import type { Skill } from '../types'
+
+export const skills: Skill[] = [
+  { name: 'Python', category: 'languages', level: 0.95 },
+  { name: 'TypeScript', category: 'languages', level: 0.85 },
+  { name: 'JavaScript', category: 'languages', level: 0.85 },
+  { name: 'SQL', category: 'languages', level: 0.75 },
+  { name: 'PyTorch', category: 'ml', level: 0.9 },
+  { name: 'JAX/Equinox', category: 'ml', level: 0.8 },
+  { name: 'TensorFlow', category: 'ml', level: 0.8 },
+  { name: 'scikit-learn', category: 'ml', level: 0.85 },
+  { name: 'OpenCV', category: 'ml', level: 0.75 },
+  { name: 'Reinforcement Learning', category: 'ml', level: 0.9 },
+  { name: 'LangChain', category: 'llm', level: 0.85 },
+  { name: 'LlamaIndex', category: 'llm', level: 0.85 },
+  { name: 'Hugging Face', category: 'llm', level: 0.8 },
+  { name: 'RAG Pipelines', category: 'llm', level: 0.85 },
+  { name: 'Claude API', category: 'llm', level: 0.8 },
+  { name: 'React', category: 'web', level: 0.85 },
+  { name: 'Next.js', category: 'web', level: 0.8 },
+  { name: 'FastAPI', category: 'web', level: 0.85 },
+  { name: 'Node.js', category: 'web', level: 0.75 },
+  { name: 'PostgreSQL', category: 'web', level: 0.8 },
+  { name: 'Docker', category: 'cloud', level: 0.8 },
+  { name: 'AWS', category: 'cloud', level: 0.7 },
+  { name: 'GitHub Actions', category: 'cloud', level: 0.8 },
+  { name: 'GCP', category: 'cloud', level: 0.65 },
+]
