@@ -22,7 +22,7 @@ export function Hero() {
     <section
       ref={containerRef}
       id="hero"
-      className="relative min-h-screen flex items-center section-padding z-10"
+      className="relative min-h-screen flex items-center section-padding z-10 bg-background-dark text-text-light"
     >
       <div className="max-w-3xl">
         <p className="hero-greeting text-sm md:text-base text-muted font-mono mb-4">
