@@ -1,15 +1,18 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import { SectionHeading } from '../ui/SectionHeading'
 import { BlogCard } from '../ui/BlogCard'
+import { BlogModal } from '../ui/BlogModal'
 import { blogPosts } from '../../data/blog'
+import type { BlogPost } from '../../types'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
 export function Blog() {
   const containerRef = useRef<HTMLElement>(null)
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
 
   useGSAP(() => {
     gsap.from('.blog-card', {
@@ -37,10 +40,15 @@ export function Blog() {
         <SectionHeading number="05" title="Blog" />
         <div className="blog-grid grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogPosts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
+            <BlogCard
+              key={post.slug}
+              post={post}
+              onClick={() => setSelectedPost(post)}
+            />
           ))}
         </div>
       </div>
+      <BlogModal post={selectedPost} onClose={() => setSelectedPost(null)} />
     </section>
   )
 }

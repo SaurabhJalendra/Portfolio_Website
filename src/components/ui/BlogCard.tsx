@@ -2,11 +2,18 @@ import type { BlogPost } from '../../types'
 
 interface BlogCardProps {
   post: Omit<BlogPost, 'content'>
+  onClick?: () => void
 }
 
-export function BlogCard({ post }: BlogCardProps) {
+export function BlogCard({ post, onClick }: BlogCardProps) {
   return (
-    <article className="blog-card group p-6 rounded-2xl border border-white/10 bg-white/5 hover:border-primary/30 transition-all duration-300">
+    <article
+      className="blog-card group p-6 rounded-2xl border border-white/10 bg-white/5 hover:border-primary/30 transition-all duration-300 cursor-pointer"
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() } } : undefined}
+    >
       <div className="flex items-center gap-3 mb-3">
         <time className="text-xs font-mono text-primary">{post.date}</time>
         <span className="text-xs text-muted">{post.readTime}</span>
