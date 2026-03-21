@@ -7,6 +7,9 @@ dist/
 # Private daily notes (raw input for /blog skill)
 notes/
 
+# Dev screenshots
+screenshots/
+
 # Environment variables
 .env
 .env.local
