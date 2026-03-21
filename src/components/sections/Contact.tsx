@@ -12,10 +12,13 @@ export function Contact() {
   const containerRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
-    gsap.from('.contact-content', {
-      y: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
-      scrollTrigger: { trigger: '.contact-content', start: 'top 85%', toggleActions: 'play none none none' },
-    })
+    gsap.fromTo('.contact-content',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: { trigger: '.contact-content', start: 'top 85%', toggleActions: 'play none none none' },
+      }
+    )
   }, { scope: containerRef })
 
   return (

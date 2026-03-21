@@ -45,6 +45,12 @@
   transform: none !important;
 }
 
+/* Ensure content is visible even if GSAP fails to initialize */
+.exp-card, .project-card, .blog-card, .about-text, .edu-item,
+.legend-item, .skills-canvas, .contact-content {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

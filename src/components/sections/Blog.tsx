@@ -15,10 +15,13 @@ export function Blog() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
 
   useGSAP(() => {
-    gsap.from('.blog-card', {
-      y: 40, opacity: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out',
-      scrollTrigger: { trigger: '.blog-grid', start: 'top 80%', toggleActions: 'play none none none' },
-    })
+    gsap.fromTo('.blog-card',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: { trigger: '.blog-grid', start: 'top 80%', toggleActions: 'play none none none' },
+      }
+    )
   }, { scope: containerRef })
 
   if (blogPosts.length === 0) {

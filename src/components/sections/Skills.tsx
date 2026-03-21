@@ -22,14 +22,20 @@ export function Skills() {
   const containerRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
-    gsap.from('.skills-canvas', {
-      opacity: 0, scale: 0.8, duration: 1, ease: 'power3.out',
-      scrollTrigger: { trigger: '.skills-canvas', start: 'top 80%', toggleActions: 'play none none none' },
-    })
-    gsap.from('.legend-item', {
-      x: -20, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out',
-      scrollTrigger: { trigger: '.skills-legend', start: 'top 85%', toggleActions: 'play none none none' },
-    })
+    gsap.fromTo('.skills-canvas',
+      { opacity: 0, scale: 0.8 },
+      { opacity: 1, scale: 1, duration: 1, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: { trigger: '.skills-canvas', start: 'top 80%', toggleActions: 'play none none none' },
+      }
+    )
+    gsap.fromTo('.legend-item',
+      { opacity: 0, x: -20 },
+      { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: { trigger: '.skills-legend', start: 'top 85%', toggleActions: 'play none none none' },
+      }
+    )
   }, { scope: containerRef })
 
   return (

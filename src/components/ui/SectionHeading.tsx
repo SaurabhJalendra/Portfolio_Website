@@ -14,17 +14,17 @@ export function SectionHeading({ number, title }: SectionHeadingProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    gsap.from(ref.current, {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-    })
+    gsap.fromTo(ref.current,
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      }
+    )
   }, { scope: ref })
 
   return (

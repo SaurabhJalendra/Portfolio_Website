@@ -16,15 +16,21 @@ export function About() {
   const containerRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
-    gsap.from('.about-text', {
-      y: 40, opacity: 0, duration: 0.8, ease: 'power3.out',
-      scrollTrigger: { trigger: '.about-text', start: 'top 85%', toggleActions: 'play none none none' },
-    })
+    gsap.fromTo('.about-text',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: { trigger: '.about-text', start: 'top 85%', toggleActions: 'play none none none' },
+      }
+    )
 
-    gsap.from('.edu-item', {
-      y: 30, opacity: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out',
-      scrollTrigger: { trigger: '.edu-timeline', start: 'top 80%', toggleActions: 'play none none none' },
-    })
+    gsap.fromTo('.edu-item',
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: { trigger: '.edu-timeline', start: 'top 80%', toggleActions: 'play none none none' },
+      }
+    )
   }, { scope: containerRef })
 
   return (

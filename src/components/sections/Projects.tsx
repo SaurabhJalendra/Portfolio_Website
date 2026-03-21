@@ -12,18 +12,17 @@ export function Projects() {
   const containerRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
-    gsap.from('.project-card', {
-      y: 60,
-      opacity: 0,
-      duration: 0.7,
-      stagger: 0.15,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: '.projects-grid',
-        start: 'top 80%',
-        toggleActions: 'play none none none',
-      },
-    })
+    gsap.fromTo('.project-card',
+      { opacity: 0, y: 60 },
+      { opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: '.projects-grid',
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      }
+    )
   }, { scope: containerRef })
 
   const featured = projects.filter((p) => p.featured)
