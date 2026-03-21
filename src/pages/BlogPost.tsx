@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import ReactMarkdown from 'react-markdown'
+import { MarkdownWithViz } from '../components/ui/visualizations/MarkdownWithViz'
 import { blogPosts } from '../data/blog'
 
 export function BlogPost() {
@@ -45,8 +45,8 @@ export function BlogPost() {
         </header>
 
         {/* Content */}
-        <div className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:text-text-light prose-p:text-muted prose-a:text-primary prose-strong:text-text-light prose-code:text-primary/80 prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10">
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+        <div className="max-w-none">
+          <MarkdownWithViz content={post.content} />
         </div>
       </div>
     </article>
