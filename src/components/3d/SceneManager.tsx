@@ -24,15 +24,12 @@ export function SceneManager() {
     const handleScroll = () => {
       const scrollY = window.scrollY
       const heroHeight = window.innerHeight
-      // Fade out over the second half of the hero section
-      const fadeStart = heroHeight * 0.3
-      const fadeEnd = heroHeight * 0.8
-      if (scrollY <= fadeStart) {
+      if (scrollY <= heroHeight * 0.3) {
         setOpacity(1)
-      } else if (scrollY >= fadeEnd) {
-        setOpacity(0)
       } else {
-        setOpacity(1 - (scrollY - fadeStart) / (fadeEnd - fadeStart))
+        // Fade to 0.15 instead of 0 — always subtly visible
+        const t = Math.min((scrollY - heroHeight * 0.3) / (heroHeight * 0.5), 1)
+        setOpacity(1 - t * 0.85)
       }
     }
 

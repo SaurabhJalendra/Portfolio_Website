@@ -1,55 +1,65 @@
-import { useState, useCallback, Suspense, lazy } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useState, useCallback, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ReducedMotionProvider } from './components/ui/ReducedMotionProvider'
 import { Preloader } from './components/ui/Preloader'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
 import { SceneManager } from './components/3d/SceneManager'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Home } from './pages/Home'
+import { BlogPost } from './pages/BlogPost'
+import { Portfolio } from './pages/Portfolio'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const Hero = lazy(() => import('./components/sections/Hero').then(m => ({ default: m.Hero })))
-const About = lazy(() => import('./components/sections/About').then(m => ({ default: m.About })))
-const Experience = lazy(() => import('./components/sections/Experience').then(m => ({ default: m.Experience })))
-const Projects = lazy(() => import('./components/sections/Projects').then(m => ({ default: m.Projects })))
-const Skills = lazy(() => import('./components/sections/Skills').then(m => ({ default: m.Skills })))
-const Blog = lazy(() => import('./components/sections/Blog').then(m => ({ default: m.Blog })))
-const Contact = lazy(() => import('./components/sections/Contact').then(m => ({ default: m.Contact })))
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    setTimeout(() => ScrollTrigger.refresh(), 100)
+  }, [pathname])
+  return null
+}
 
-export function App() {
+function AppContent() {
   const [loaded, setLoaded] = useState(false)
   useSmoothScroll()
 
   const handleLoadComplete = useCallback(() => {
     setLoaded(true)
-    // Give sections time to render, then refresh ScrollTrigger positions
-    setTimeout(() => {
-      ScrollTrigger.refresh()
-    }, 100)
+    setTimeout(() => ScrollTrigger.refresh(), 100)
   }, [])
 
   return (
-    <ReducedMotionProvider>
-      <a href="#about" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg">
-        Skip to content
-      </a>
+    <>
       {!loaded && <Preloader onComplete={handleLoadComplete} />}
       {loaded && <SceneManager />}
+
       <Navbar />
-      <main>
-        <Suspense fallback={null}>
-          <Hero />
-          <About />
-          <Experience />
-          <Projects />
-          <Skills />
-          <Blog />
-          <Contact />
-        </Suspense>
+
+      <main className="bg-background-dark min-h-screen">
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+        </Routes>
       </main>
+
       <Footer />
+    </>
+  )
+}
+
+export function App() {
+  return (
+    <ReducedMotionProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </ReducedMotionProvider>
   )
 }
