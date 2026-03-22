@@ -47,7 +47,7 @@
 
 /* Ensure content is visible even if GSAP fails to initialize */
 .exp-card, .project-card, .blog-card, .about-text, .edu-item,
-.legend-item, .skills-canvas, .contact-content {
+.skill-category, .contact-content {
   opacity: 1;
 }
 
@@ -57,9 +57,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  canvas {
-    display: none !important;
   }
 }

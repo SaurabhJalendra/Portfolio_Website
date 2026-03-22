@@ -4,7 +4,6 @@ import { ReducedMotionProvider } from './components/ui/ReducedMotionProvider'
 import { Preloader } from './components/ui/Preloader'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
-import { SceneManager } from './components/3d/SceneManager'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -36,7 +35,6 @@ function AppContent() {
   return (
     <>
       {!loaded && <Preloader onComplete={handleLoadComplete} />}
-      {loaded && <SceneManager />}
 
       <Navbar />
 
