@@ -1,7 +1,11 @@
 import { Canvas } from '@react-three/fiber'
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useRef } from 'react'
 import { AdaptiveDpr, PerformanceMonitor, Preload } from '@react-three/drei'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { HeroScene } from './HeroScene'
+
+gsap.registerPlugin(ScrollTrigger)
 
 function isWebGLAvailable(): boolean {
   try {
@@ -14,43 +18,40 @@ function isWebGLAvailable(): boolean {
 
 export function SceneManager() {
   const [webgl, setWebgl] = useState(true)
-  const [opacity, setOpacity] = useState(1)
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setWebgl(isWebGLAvailable())
   }, [])
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY
-      const heroHeight = window.innerHeight
-      if (scrollY <= heroHeight * 0.3) {
-        setOpacity(1)
-      } else {
-        // Fade to 0.15 instead of 0 — always subtly visible
-        const t = Math.min((scrollY - heroHeight * 0.3) / (heroHeight * 0.5), 1)
-        setOpacity(1 - t * 0.85)
-      }
-    }
+    if (!wrapperRef.current) return
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    // Fade within the first 400px of scroll (works even on short pages)
+    const st = ScrollTrigger.create({
+      start: 0,
+      end: 400,
+      onUpdate: (self) => {
+        if (wrapperRef.current) {
+          const opacity = 1 - self.progress * 0.92
+          wrapperRef.current.style.opacity = String(Math.max(opacity, 0.08))
+        }
+      },
+    })
+
+    return () => st.kill()
   }, [])
 
   if (!webgl) return null
 
-  const isHidden = opacity <= 0.01
-
   return (
     <div
+      ref={wrapperRef}
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 0,
-        opacity,
-        transition: 'opacity 0.1s ease-out',
         pointerEvents: 'none',
-        visibility: isHidden ? 'hidden' : 'visible',
       }}
     >
       <Canvas

@@ -36,32 +36,29 @@ function AccretionDisk() {
 
   return (
     <group ref={diskRef}>
-      {/* Main accretion disk - tilted to camera */}
+      {/* Main accretion disk */}
       <mesh rotation={[Math.PI / 2, 0, 0]} geometry={diskGeometry}>
-        <meshStandardMaterial
+        <meshBasicMaterial
           vertexColors
-          emissive="#ffffff"
-          emissiveIntensity={0.4}
           transparent
-          opacity={0.85}
+          opacity={0.9}
           side={THREE.DoubleSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
+          toneMapped={false}
         />
       </mesh>
 
-      {/* Lensed disk - appears to wrap over the top of the black hole */}
-      {/* This is the curved part visible above the event horizon */}
+      {/* Lensed disk - curved over the top */}
       <mesh rotation={[0, 0, 0]} geometry={diskGeometry} scale={[1, 0.15, 1]}>
-        <meshStandardMaterial
+        <meshBasicMaterial
           vertexColors
-          emissive="#ffffff"
-          emissiveIntensity={0.3}
           transparent
-          opacity={0.4}
+          opacity={0.35}
           side={THREE.DoubleSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
+          toneMapped={false}
         />
       </mesh>
     </group>
@@ -79,23 +76,25 @@ function EventHorizon() {
 
       {/* Photon ring - thin bright ring at event horizon */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.2, 0.02, 16, 128]} />
-        <meshStandardMaterial
-          color="#ffa040"
-          emissive="#ff8020"
-          emissiveIntensity={5}
+        <torusGeometry args={[1.2, 0.03, 16, 128]} />
+        <meshBasicMaterial
+          color="#ffaa44"
           toneMapped={false}
+          transparent
+          opacity={0.9}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
 
       {/* Secondary photon ring */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.25, 0.01, 16, 128]} />
-        <meshStandardMaterial
-          color="#6366f1"
-          emissive="#6366f1"
-          emissiveIntensity={3}
+        <torusGeometry args={[1.25, 0.015, 16, 128]} />
+        <meshBasicMaterial
+          color="#8b5cf6"
           toneMapped={false}
+          transparent
+          opacity={0.7}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
 
@@ -267,7 +266,8 @@ export function HeroScene() {
         distance={15}
       />
 
-      <group ref={groupRef} rotation={[-0.5, 0, 0]}>
+      {/* Offset right so text on left is readable */}
+      <group ref={groupRef} position={[3, 0.5, 0]} rotation={[-0.5, 0, 0]} scale={0.8}>
         <EventHorizon />
         <AccretionDisk />
       </group>
