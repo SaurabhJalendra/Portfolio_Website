@@ -12,8 +12,8 @@ export function Experience() {
 
   useGSAP(() => {
     gsap.fromTo('.exp-card',
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 0.7, stagger: 0.2, ease: 'power3.out',
+      { opacity: 0, y: 50, scale: 0.98 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.2, ease: 'power3.out',
         immediateRender: false,
         scrollTrigger: { trigger: '.exp-list', start: 'top 80%', toggleActions: 'play none none none' },
       }
