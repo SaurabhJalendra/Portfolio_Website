@@ -35,7 +35,7 @@ export function ProjectCard({ project, index: _index, featured }: ProjectCardPro
     <div
       ref={cardRef}
       className={cn(
-        'project-card group relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden transition-all duration-300 ease-out',
+        'project-card card-hover-lift group relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden transition-all duration-300 ease-out group-hover:shadow-[0_0_20px_rgba(99,102,241,0.1)]',
         featured ? 'md:col-span-2' : ''
       )}
       onMouseMove={handleMouseMove}
@@ -64,7 +64,7 @@ export function ProjectCard({ project, index: _index, featured }: ProjectCardPro
           </div>
         </div>
 
-        <h3 className="text-xl font-display font-semibold mb-2 group-hover:text-primary transition-colors">
+        <h3 className="text-xl font-display font-semibold mb-2 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200">
           {project.title}
         </h3>
 

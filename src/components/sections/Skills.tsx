@@ -26,6 +26,25 @@ export function Skills() {
         scrollTrigger: { trigger: '.skills-grid', start: 'top 85%', toggleActions: 'play none none none' },
       }
     )
+
+    // Animate skill progress bars when scrolled into view
+    gsap.utils.toArray<HTMLElement>('.skill-tag [data-level]').forEach((bar) => {
+      const level = parseFloat(bar.dataset.level ?? '0')
+      gsap.fromTo(bar,
+        { width: '0%' },
+        {
+          width: `${level * 100}%`,
+          duration: 1,
+          ease: 'power3.out',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: bar.closest('.skill-category'),
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      )
+    })
   }, { scope: containerRef })
 
   return (
@@ -43,9 +62,14 @@ export function Skills() {
                 {skills.filter((s) => s.category === cat.key).map((s) => (
                   <span
                     key={s.name}
-                    className="text-sm px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-muted hover:text-text-light hover:border-primary/30 transition-all duration-200"
+                    className="skill-tag relative text-sm px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-muted hover:text-text-light hover:border-primary/30 hover:shadow-[0_0_12px_rgba(99,102,241,0.1)] transition-all duration-200 overflow-hidden"
                   >
                     {s.name}
+                    <span
+                      className="absolute bottom-0 left-0 h-0.5 rounded-full bg-gradient-to-r from-primary to-secondary"
+                      style={{ width: '0%' }}
+                      data-level={s.level}
+                    />
                   </span>
                 ))}
               </div>

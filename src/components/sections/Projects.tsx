@@ -14,7 +14,7 @@ export function Projects() {
   useGSAP(() => {
     gsap.fromTo('.project-card',
       { opacity: 0, y: 60 },
-      { opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out',
+      { opacity: 1, y: 0, duration: 0.7, stagger: 0.2, ease: 'power3.out',
         immediateRender: false,
         scrollTrigger: {
           trigger: '.projects-grid',
@@ -36,7 +36,11 @@ export function Projects() {
         {/* Featured projects */}
         <div className="projects-grid grid md:grid-cols-2 gap-6 mb-8">
           {featured.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} featured />
+            <div key={project.id} className="relative">
+              {/* Gradient decorative strip */}
+              <div className="bg-gradient-to-r from-primary to-secondary h-0.5 rounded-t-2xl" />
+              <ProjectCard project={project} index={i} featured />
+            </div>
           ))}
         </div>
 

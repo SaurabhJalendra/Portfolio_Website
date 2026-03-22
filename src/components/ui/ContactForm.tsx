@@ -24,7 +24,7 @@ export function ContactForm() {
           name="name"
           type="text"
           required
-          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-text-light placeholder-muted focus:outline-none focus:border-primary transition-colors"
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-text-light placeholder-muted input-focus-glow transition-colors"
           placeholder="Your name"
         />
       </div>
@@ -35,7 +35,7 @@ export function ContactForm() {
           name="email"
           type="email"
           required
-          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-text-light placeholder-muted focus:outline-none focus:border-primary transition-colors"
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-text-light placeholder-muted input-focus-glow transition-colors"
           placeholder="your@email.com"
         />
       </div>
@@ -46,14 +46,14 @@ export function ContactForm() {
           name="message"
           required
           rows={5}
-          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-text-light placeholder-muted focus:outline-none focus:border-primary transition-colors resize-none"
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-text-light placeholder-muted input-focus-glow transition-colors resize-none"
           placeholder="What would you like to discuss?"
         />
       </div>
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="px-8 py-3 rounded-full bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50 transition-all"
+        className="btn-press px-8 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 disabled:opacity-50 transition-all"
       >
         {status === 'sent' ? 'Message sent!' : 'Send Message'}
       </button>

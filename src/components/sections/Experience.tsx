@@ -25,12 +25,14 @@ export function Experience() {
       <div className="max-w-5xl mx-auto">
         <SectionHeading number="02" title="Experience" />
 
-        <div className="exp-list space-y-8">
+        <div className="exp-list space-y-8 relative border-l-2 border-dashed border-white/10 pl-8 ml-4">
           {experiences.map((exp) => (
             <div
               key={exp.id}
-              className="exp-card group p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm hover:border-primary/30 transition-all duration-300"
+              className="exp-card card-hover-lift group relative p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm hover:border-primary/30 transition-all duration-300"
             >
+              {/* Timeline dot */}
+              <div className="absolute -left-[calc(2rem+5px)] top-8 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background-dark" />
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
                 <div>
                   <h3 className="text-xl font-display font-semibold group-hover:text-primary transition-colors">
