@@ -45,7 +45,7 @@ graph TD
     D --> F[Compute]
     E --> F
     F --> G[Output + Explanation]
-    G --> |Feedback Loop| C
+    G -->|Feedback Loop| C
 \`\`\`
 
 You express intent. The LLM reasons about what compute is needed. It plans execution, predicts errors before they happen, and runs.

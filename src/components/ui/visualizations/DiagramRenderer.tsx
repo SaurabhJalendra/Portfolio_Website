@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useId } from 'react'
 import mermaid from 'mermaid'
 
 mermaid.initialize({
@@ -18,20 +18,36 @@ mermaid.initialize({
 export function DiagramRenderer({ content }: { content: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [svg, setSvg] = useState('')
-  const idRef = useRef(`mermaid-${Math.random().toString(36).slice(2, 9)}`)
+  const reactId = useId()
+  const renderCount = useRef(0)
 
   useEffect(() => {
+    // Generate unique ID for each render to avoid Mermaid ID collisions
+    renderCount.current += 1
+    const id = `mermaid-${reactId.replace(/:/g, '')}-${renderCount.current}`
+
+    let cancelled = false
+
     const render = async () => {
       try {
-        const { svg: renderedSvg } = await mermaid.render(idRef.current, content.trim())
-        setSvg(renderedSvg)
+        // Remove any previous render artifacts
+        const existing = document.getElementById(id)
+        if (existing) existing.remove()
+
+        const { svg: renderedSvg } = await mermaid.render(id, content.trim())
+        if (!cancelled) setSvg(renderedSvg)
       } catch (e) {
         console.error('Mermaid render error:', e)
-        setSvg(`<pre style="color: #ef4444">${content}</pre>`)
+        if (!cancelled) setSvg(`<pre style="color: #dc2626; font-size: 14px; white-space: pre-wrap;">${content}</pre>`)
       }
     }
+
     render()
-  }, [content])
+
+    return () => {
+      cancelled = true
+    }
+  }, [content, reactId])
 
   return (
     <div
