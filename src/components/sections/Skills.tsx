@@ -50,7 +50,7 @@ export function Skills() {
   return (
     <section ref={containerRef} id="skills" className="section-padding relative z-10">
       <div className="max-w-5xl mx-auto">
-        <SectionHeading number="04" title="Skills" />
+        <SectionHeading title="Skills" />
         <div className="skills-grid grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((cat) => (
             <div key={cat.key} className="skill-category">

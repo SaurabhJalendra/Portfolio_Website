@@ -24,7 +24,7 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
   return (
     <div
       className={cn(
-        'fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background-dark transition-opacity duration-700',
+        'fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white transition-opacity duration-700',
         hiding && 'opacity-0 pointer-events-none'
       )}
     >

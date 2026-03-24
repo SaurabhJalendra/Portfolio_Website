@@ -24,7 +24,7 @@ export function Contact() {
   return (
     <section ref={containerRef} id="contact" className="section-padding relative z-10 bg-background-dark text-text-light">
       <div className="max-w-5xl mx-auto">
-        <SectionHeading number="06" title="Get in Touch" />
+        <SectionHeading title="Get in Touch" />
 
         <div className="contact-content grid md:grid-cols-2 gap-12">
           <div>

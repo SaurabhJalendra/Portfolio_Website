@@ -31,7 +31,7 @@ export function Projects() {
   return (
     <section ref={containerRef} id="projects" className="section-padding relative z-10">
       <div className="max-w-6xl mx-auto">
-        <SectionHeading number="03" title="Projects" />
+        <SectionHeading title="Projects" />
 
         {/* Featured projects */}
         <div className="projects-grid grid md:grid-cols-2 gap-6 mb-8">

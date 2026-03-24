@@ -1,99 +1,107 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, Navigate } from 'react-router-dom'
 import { useRef, useEffect, useState } from 'react'
+import { ArrowLeft, Calendar, Clock } from 'lucide-react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 import { blogPosts } from '../data/blog'
 import { MarkdownWithViz } from '../components/ui/visualizations/MarkdownWithViz'
 
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>()
   const post = blogPosts.find((p) => p.slug === slug)
-  const articleRef = useRef<HTMLElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [readProgress, setReadProgress] = useState(0)
 
-  // Reading progress bar
   useEffect(() => {
     const updateProgress = () => {
-      if (!articleRef.current) return
-      const articleTop = articleRef.current.offsetTop
-      const articleHeight = articleRef.current.offsetHeight
-      const windowHeight = window.innerHeight
       const scrollY = window.scrollY
-
-      const progress = Math.max(0, Math.min(1,
-        (scrollY - articleTop + windowHeight * 0.3) / (articleHeight - windowHeight * 0.5)
-      ))
-      setReadProgress(progress)
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      setReadProgress(maxScroll > 0 ? scrollY / maxScroll : 0)
     }
-
     window.addEventListener('scroll', updateProgress, { passive: true })
-    updateProgress()
     return () => window.removeEventListener('scroll', updateProgress)
   }, [])
 
-  if (!post) {
-    return (
-      <div className="min-h-screen flex items-center justify-center relative z-10">
-        <div className="text-center">
-          <h1 className="text-4xl font-display font-bold text-text-light mb-4">Post not found</h1>
-          <Link to="/" className="text-primary hover:underline">Back to home</Link>
-        </div>
-      </div>
+  useGSAP(() => {
+    gsap.fromTo('.blog-header',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
     )
+    gsap.fromTo('.blog-body',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' }
+    )
+  }, { scope: containerRef })
+
+  if (!post) {
+    return <Navigate to="/" replace />
   }
 
   return (
-    <>
+    <div ref={containerRef} className="min-h-screen bg-white">
       {/* Reading progress */}
       <div
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, height: 2,
-          background: 'linear-gradient(to right, #6366f1, #8b5cf6)',
+          background: '#2563eb',
           transformOrigin: 'left', transform: `scaleX(${readProgress})`,
           zIndex: 101, pointerEvents: 'none',
         }}
       />
 
-      <article ref={articleRef} className="relative z-10 px-6 md:px-12 pt-28 pb-24">
-        <div className="max-w-2xl mx-auto">
+      <article className="pt-24 pb-16">
+        <div className="max-w-4xl mx-auto px-6">
           {/* Back link */}
           <Link
             to="/"
-            className="group text-sm text-muted hover:text-primary transition-colors mb-8 inline-flex items-center gap-2 link-hover-underline"
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-8 group"
           >
-            <svg
-              className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
+            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            Back to Blog
           </Link>
 
           {/* Header */}
-          <header className="mt-6 mb-12">
-            <div className="flex items-center gap-3 mb-4">
-              <time className="text-sm font-mono text-primary">{post.date}</time>
-              <span className="text-sm text-muted">{post.readTime}</span>
+          <header className="blog-header mb-12">
+            <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
+              <span className="flex items-center gap-1.5">
+                <Calendar size={14} />
+                {post.date}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Clock size={14} />
+                {post.readTime}
+              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-text-light leading-[1.1] tracking-tight mb-6">
+
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               {post.title}
             </h1>
-            <div className="flex flex-wrap gap-2 mb-6">
+
+            <p className="text-xl text-gray-600 leading-relaxed mb-6">{post.summary}</p>
+
+            <div className="flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <span key={tag} className="text-xs font-mono px-3 py-1 rounded-full bg-primary/10 text-primary/70">
+                <span key={tag} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200">
                   {tag}
                 </span>
               ))}
             </div>
-            {/* Decorative gradient line */}
-            <div className="h-px bg-gradient-to-r from-primary/50 via-secondary/30 to-transparent" />
           </header>
 
           {/* Content */}
-          <div className="blog-content">
+          <div className="blog-body prose prose-lg max-w-none">
             <MarkdownWithViz content={'content' in post ? post.content : ''} />
+          </div>
+
+          {/* Back to blog */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <Link to="/" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 group">
+              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+              Back to all posts
+            </Link>
           </div>
         </div>
       </article>
-    </>
+    </div>
   )
 }

@@ -23,7 +23,7 @@ export function Experience() {
   return (
     <section ref={containerRef} id="experience" className="section-padding relative z-10 bg-background-dark text-text-light">
       <div className="max-w-5xl mx-auto">
-        <SectionHeading number="02" title="Experience" />
+        <SectionHeading title="Experience" />
 
         <div className="exp-list space-y-8 relative border-l-2 border-dashed border-white/10 pl-8 ml-4">
           {experiences.map((exp) => (

@@ -2,12 +2,9 @@ import { useState, useCallback } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ReducedMotionProvider } from './components/ui/ReducedMotionProvider'
 import { Preloader } from './components/ui/Preloader'
-import { Navbar } from './components/ui/Navbar'
-import { Footer } from './components/ui/Footer'
-import { CustomCursor } from './components/ui/CustomCursor'
 import { ScrollProgress } from './components/ui/ScrollProgress'
-import { AmbientBackground } from './components/ui/AmbientBackground'
 import { PageTransition } from './components/ui/PageTransition'
+import { Navbar } from './components/ui/Navbar'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -29,12 +26,9 @@ function AppContent() {
   return (
     <>
       {!loaded && <Preloader onComplete={handleLoadComplete} />}
-
-      <Navbar />
       <ScrollProgress />
-      <AmbientBackground />
-
-      <main className="bg-background-dark min-h-screen">
+      <Navbar />
+      <main className="min-h-screen">
         <PageTransition>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -43,9 +37,6 @@ function AppContent() {
           </Routes>
         </PageTransition>
       </main>
-
-      <Footer />
-      <CustomCursor />
     </>
   )
 }

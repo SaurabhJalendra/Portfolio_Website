@@ -36,7 +36,7 @@ export function About() {
   return (
     <section ref={containerRef} id="about" className="section-padding relative z-10">
       <div className="max-w-5xl mx-auto">
-        <SectionHeading number="01" title="About Me" />
+        <SectionHeading title="About Me" />
 
         <div className="grid md:grid-cols-2 gap-12">
           <div className="about-text space-y-4 text-muted leading-relaxed">

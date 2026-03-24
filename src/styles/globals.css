@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #fafafa;
-  --color-background-dark: #0a0a0a;
-  --color-primary: #6366f1;
-  --color-secondary: #8b5cf6;
-  --color-text: #18181b;
-  --color-text-light: #f4f4f5;
-  --color-muted: #71717a;
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #6b7280;
+  --color-muted-foreground: #717182;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-card: #ffffff;
+  --color-accent: #eff6ff;
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
 }
@@ -16,62 +18,22 @@
   html {
     scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply bg-background-dark text-text-light font-body;
+    @apply bg-background text-foreground font-body;
     overflow-x: hidden;
   }
 
   ::selection {
-    @apply bg-primary/20 text-primary;
+    @apply bg-primary/10 text-primary;
   }
 }
 
 @layer components {
   .section-padding {
-    @apply px-6 md:px-12 lg:px-24 py-24 md:py-32;
+    @apply px-6 py-16;
   }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
-  }
-}
-
-/* Ensure GSAP-animated elements are visible if JS fails or ScrollTrigger doesn't fire */
-.gsap-init {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* Ensure content is visible even if GSAP fails to initialize */
-.exp-card, .project-card, .blog-card, .about-text, .edu-item,
-.skill-category, .contact-content {
-  opacity: 1;
-}
-
-/* ===== VISUAL UPGRADE: Foundation ===== */
-
-/* Grain noise overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
-}
-
-/* Ambient glow animations */
-@keyframes float-glow {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.05); }
-  66% { transform: translate(-20px, 15px) scale(0.95); }
 }
 
 /* Scroll reveal system */
@@ -105,52 +67,10 @@ body::before {
   transform: scaleX(1);
 }
 
-/* Button effects */
-.btn-press:active {
-  transform: scale(0.98) !important;
-}
-
-/* Animated gradient text */
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.animated-gradient-text {
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), #a78bfa, var(--color-primary));
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-shift 6s ease infinite;
-}
-
-/* Dot grid pattern for hero */
-.dot-grid-bg {
-  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Card hover lift */
-.card-hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.card-hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
-  border-color: rgba(99, 102, 241, 0.3) !important;
-}
-
-/* Gradient border on focus */
-.input-focus-glow:focus {
-  border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  outline: none;
-}
-
-/* Custom cursor (desktop only) */
-@media (hover: hover) and (pointer: fine) {
-  * { cursor: none !important; }
+/* GSAP animation fallbacks */
+.exp-card, .project-card, .blog-card, .about-text, .edu-item,
+.skill-category, .contact-content {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -160,7 +80,5 @@ body::before {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  body::before { display: none; }
   [data-reveal] { opacity: 1; transform: none; transition: none; }
-  .animated-gradient-text { animation: none; }
 }

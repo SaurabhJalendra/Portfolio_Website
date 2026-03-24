@@ -1,132 +1,63 @@
-import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { cn } from '../../utils/cn'
-import gsap from 'gsap'
+import { Mail } from 'lucide-react'
 
-const navItems = [
-  { label: 'Blog', href: '/' },
-  { label: 'Portfolio', href: '/portfolio' },
-]
+function GithubIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  )
+}
+
+function LinkedinIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  )
+}
 
 export function Navbar() {
-  const [scrollY, setScrollY] = useState(0)
-  const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
-  const mobileMenuRef = useRef<HTMLUListElement>(null)
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [location.pathname])
-
-  // Mobile menu stagger animation
-  useEffect(() => {
-    if (menuOpen && mobileMenuRef.current) {
-      gsap.fromTo(
-        mobileMenuRef.current.children,
-        { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 0.3, stagger: 0.05, ease: 'power3.out' }
-      )
-    }
-  }, [menuOpen])
-
-  const blurAmount = Math.min(scrollY / 5, 20)
-  const bgOpacity = Math.min(scrollY / 200, 0.8)
-  const borderOpacity = Math.min(scrollY / 300, 0.05)
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-[border-color] duration-300"
-      style={{
-        backdropFilter: `blur(${blurAmount}px)`,
-        WebkitBackdropFilter: `blur(${blurAmount}px)`,
-        backgroundColor: `rgba(10, 10, 10, ${bgOpacity})`,
-        borderBottom: `1px solid rgba(255, 255, 255, ${borderOpacity})`,
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16">
-        <Link
-          to="/"
-          className="font-display font-bold text-lg text-text-light tracking-tight hover:tracking-wide transition-all duration-300"
-        >
-          SJ
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <nav className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <Link to="/" className="text-xl font-semibold tracking-tight">
+          Saurabh Jalendra
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={cn(
-                'relative text-sm transition-colors duration-200 link-hover-underline py-1',
-                location.pathname === item.href ? 'text-text-light' : 'text-muted hover:text-text-light'
-              )}
-            >
-              {item.label}
-              {location.pathname === item.href && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
-              )}
-            </Link>
-          ))}
-          <a
-            href="/cv.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 btn-press"
+        <div className="flex items-center gap-8">
+          <Link
+            to="/"
+            className={`text-sm transition-colors ${
+              location.pathname === '/' ? 'text-black' : 'text-gray-600 hover:text-black'
+            }`}
           >
-            Resume
-          </a>
-        </div>
+            Blog
+          </Link>
+          <Link
+            to="/portfolio"
+            className={`text-sm transition-colors ${
+              location.pathname === '/portfolio' ? 'text-black' : 'text-gray-600 hover:text-black'
+            }`}
+          >
+            Portfolio
+          </Link>
 
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span className={cn('w-6 h-0.5 bg-text-light transition-all duration-300', menuOpen && 'rotate-45 translate-y-2')} />
-          <span className={cn('w-6 h-0.5 bg-text-light transition-all duration-300', menuOpen && 'opacity-0')} />
-          <span className={cn('w-6 h-0.5 bg-text-light transition-all duration-300', menuOpen && '-rotate-45 -translate-y-2')} />
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      <div
-        className={cn(
-          'md:hidden overflow-hidden transition-all duration-300',
-          menuOpen ? 'max-h-96' : 'max-h-0'
-        )}
-        style={{ backgroundColor: 'rgba(10, 10, 10, 0.95)', backdropFilter: 'blur(20px)' }}
-      >
-        <ul ref={mobileMenuRef} className="flex flex-col gap-4 px-6 py-6">
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <Link
-                to={item.href}
-                onClick={() => setMenuOpen(false)}
-                className={cn(
-                  'text-lg transition-colors',
-                  location.pathname === item.href ? 'text-primary' : 'text-text-light'
-                )}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-          <li>
-            <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="text-lg text-muted hover:text-text-light">
-              Resume
+          <div className="flex items-center gap-4 ml-4 pl-4 border-l border-gray-300">
+            <a href="https://github.com/SaurabhJalendra" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-black transition-colors">
+              <GithubIcon size={18} />
             </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+            <a href="https://linkedin.com/in/saurabhjalendra" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-black transition-colors">
+              <LinkedinIcon size={18} />
+            </a>
+            <a href="mailto:saurabhjalendra@gmail.com" className="text-gray-600 hover:text-black transition-colors">
+              <Mail size={18} />
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
   )
 }
