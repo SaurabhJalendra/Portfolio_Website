@@ -1,5 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { ArrowLeft, Calendar, Clock } from 'lucide-react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -10,13 +10,16 @@ export function BlogPost() {
   const { slug } = useParams<{ slug: string }>()
   const post = blogPosts.find((p) => p.slug === slug)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [readProgress, setReadProgress] = useState(0)
+  const progressRef = useRef<HTMLDivElement>(null)
 
+  // Use ref for progress bar — avoids re-rendering the entire page on scroll
   useEffect(() => {
     const updateProgress = () => {
+      if (!progressRef.current) return
       const scrollY = window.scrollY
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      setReadProgress(maxScroll > 0 ? scrollY / maxScroll : 0)
+      const progress = maxScroll > 0 ? scrollY / maxScroll : 0
+      progressRef.current.style.transform = `scaleX(${progress})`
     }
     window.addEventListener('scroll', updateProgress, { passive: true })
     return () => window.removeEventListener('scroll', updateProgress)
@@ -39,12 +42,13 @@ export function BlogPost() {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-white">
-      {/* Reading progress */}
+      {/* Reading progress — uses ref, no state, no re-renders */}
       <div
+        ref={progressRef}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, height: 2,
           background: '#2563eb',
-          transformOrigin: 'left', transform: `scaleX(${readProgress})`,
+          transformOrigin: 'left', transform: 'scaleX(0)',
           zIndex: 101, pointerEvents: 'none',
         }}
       />
