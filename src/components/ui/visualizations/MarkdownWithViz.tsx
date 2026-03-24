@@ -43,7 +43,7 @@ export function MarkdownWithViz({ content }: MarkdownWithVizProps) {
           }
 
           return (
-            <pre className="p-4 rounded-xl bg-white/5 border border-white/10 overflow-x-auto">
+            <pre className="p-4 bg-gray-50 border border-gray-200 overflow-x-auto">
               {children}
             </pre>
           )
@@ -67,30 +67,30 @@ export function MarkdownWithViz({ content }: MarkdownWithVizProps) {
           // Block code (has a language class) — styled inside the <pre> from above
           if (className) {
             return (
-              <code className="text-sm font-mono text-text-light">{children}</code>
+              <code className="text-sm font-mono text-gray-900">{children}</code>
             )
           }
 
           // Inline code
           return (
-            <code className="px-1.5 py-0.5 rounded bg-white/10 text-primary/80 text-sm font-mono">
+            <code className="px-1.5 py-0.5 rounded bg-gray-100 text-blue-600 text-sm font-mono">
               {children}
             </code>
           )
         },
 
-        // Style other markdown elements for dark theme
-        h1: ({ children }) => <h1 className="text-3xl font-display font-bold text-text-light mt-10 mb-4">{children}</h1>,
-        h2: ({ children }) => <h2 className="text-2xl font-display font-bold text-text-light mt-8 mb-3">{children}</h2>,
-        h3: ({ children }) => <h3 className="text-xl font-display font-semibold text-text-light mt-6 mb-2">{children}</h3>,
-        p: ({ children }) => <p className="text-muted leading-relaxed mb-4">{children}</p>,
-        ul: ({ children }) => <ul className="list-disc list-inside space-y-1 text-muted mb-4 ml-4">{children}</ul>,
-        ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 text-muted mb-4 ml-4">{children}</ol>,
-        li: ({ children }) => <li className="text-muted leading-relaxed">{children}</li>,
-        a: ({ href, children }) => <a href={href} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>,
-        blockquote: ({ children }) => <blockquote className="border-l-2 border-primary/50 pl-4 italic text-muted/80 my-4">{children}</blockquote>,
-        strong: ({ children }) => <strong className="text-text-light font-semibold">{children}</strong>,
-        hr: () => <hr className="border-white/10 my-8" />,
+        // Style markdown elements for light theme
+        h1: ({ children }) => <h1 className="text-3xl font-bold text-black mt-10 mb-4">{children}</h1>,
+        h2: ({ children }) => <h2 className="text-2xl font-bold text-black mt-8 mb-3">{children}</h2>,
+        h3: ({ children }) => <h3 className="text-xl font-semibold text-black mt-6 mb-2">{children}</h3>,
+        p: ({ children }) => <p className="text-gray-700 leading-relaxed mb-4">{children}</p>,
+        ul: ({ children }) => <ul className="list-disc list-inside space-y-1 text-gray-700 mb-4 ml-4">{children}</ul>,
+        ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 text-gray-700 mb-4 ml-4">{children}</ol>,
+        li: ({ children }) => <li className="text-gray-700 leading-relaxed">{children}</li>,
+        a: ({ href, children }) => <a href={href} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>,
+        blockquote: ({ children }) => <blockquote className="border-l-4 border-blue-600 bg-blue-50 p-6 italic text-gray-700 my-4">{children}</blockquote>,
+        strong: ({ children }) => <strong className="text-black font-semibold">{children}</strong>,
+        hr: () => <hr className="border-gray-200 my-8" />,
       }}
     >
       {content}

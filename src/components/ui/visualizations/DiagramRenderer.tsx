@@ -3,14 +3,14 @@ import mermaid from 'mermaid'
 
 mermaid.initialize({
   startOnLoad: false,
-  theme: 'dark',
+  theme: 'default',
   themeVariables: {
-    primaryColor: '#6366f1',
-    primaryTextColor: '#f4f4f5',
-    primaryBorderColor: '#8b5cf6',
-    lineColor: '#71717a',
-    secondaryColor: '#1a1a2e',
-    tertiaryColor: '#0a0a0a',
+    primaryColor: '#2563eb',
+    primaryTextColor: '#1f2937',
+    primaryBorderColor: '#3b82f6',
+    lineColor: '#6b7280',
+    secondaryColor: '#eff6ff',
+    tertiaryColor: '#f9fafb',
     fontSize: '14px',
   },
 })
@@ -36,7 +36,7 @@ export function DiagramRenderer({ content }: { content: string }) {
   return (
     <div
       ref={containerRef}
-      className="my-8 p-6 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto flex justify-center"
+      className="my-8 p-6 bg-gray-50 border border-gray-200 overflow-x-auto flex justify-center"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   )

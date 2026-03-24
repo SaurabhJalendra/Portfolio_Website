@@ -59,18 +59,17 @@ function parseChartData(raw: string, type: string): ChartData {
   return chart
 }
 
-const COLORS = ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#818cf8']
+const COLORS = ['#2563eb', '#dc2626', '#9ca3af', '#16a34a', '#ea580c']
 
 const TOOLTIP_STYLE = {
-  background: '#1a1a2e',
-  border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 8,
-  color: '#f4f4f5',
+  background: 'white',
+  border: '1px solid #e5e7eb',
+  borderRadius: '4px',
 }
 
-const TICK_STYLE = { fill: '#71717a', fontSize: 12 }
+const TICK_STYLE = { fill: '#6b7280', fontSize: 12 }
 
-const GRID_STROKE = 'rgba(255,255,255,0.1)'
+const GRID_STROKE = '#e5e7eb'
 
 export function ChartRenderer({ content, chartType }: { content: string; chartType: string }) {
   const chart = useMemo(() => parseChartData(content, chartType), [content, chartType])
@@ -95,13 +94,13 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
   }
 
   const yLabelProps = chart.ylabel
-    ? { value: chart.ylabel, angle: -90, position: 'insideLeft' as const, fill: '#71717a', fontSize: 12 }
+    ? { value: chart.ylabel, angle: -90, position: 'insideLeft' as const, fill: '#6b7280', fontSize: 12 }
     : undefined
 
   return (
-    <div className="my-8 p-6 rounded-2xl border border-white/10 bg-white/5">
+    <div className="my-8 p-6 bg-gray-50 border border-gray-200">
       {chart.title && (
-        <h4 className="text-sm font-display font-semibold text-text-light mb-4">{chart.title}</h4>
+        <h4 className="text-sm font-semibold text-black mb-4">{chart.title}</h4>
       )}
       <ResponsiveContainer width="100%" height={300}>
         {chart.type === 'bar' && chart.data ? (
@@ -110,7 +109,7 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
             <XAxis dataKey="label" tick={TICK_STYLE} />
             <YAxis tick={TICK_STYLE} label={yLabelProps} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
-            <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="value" fill="#2563eb" radius={[4, 4, 0, 0]} />
           </BarChart>
         ) : chart.type === 'line' && chart.series ? (
           <LineChart data={seriesData} {...commonProps}>
@@ -118,7 +117,7 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
             <XAxis
               dataKey="x"
               tick={TICK_STYLE}
-              label={chart.xlabel ? { value: chart.xlabel, position: 'bottom', fill: '#71717a', fontSize: 12 } : undefined}
+              label={chart.xlabel ? { value: chart.xlabel, position: 'bottom', fill: '#6b7280', fontSize: 12 } : undefined}
             />
             <YAxis tick={TICK_STYLE} label={yLabelProps} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
@@ -139,7 +138,7 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
             ))}
           </AreaChart>
         ) : (
-          <div className="flex items-center justify-center h-full text-muted">No chart data</div>
+          <div className="flex items-center justify-center h-full text-gray-500">No chart data</div>
         )}
       </ResponsiveContainer>
     </div>

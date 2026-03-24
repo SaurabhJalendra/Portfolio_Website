@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { Box } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
@@ -13,43 +14,21 @@ export function Projects() {
 
   useGSAP(() => {
     gsap.fromTo('.project-card',
-      { opacity: 0, y: 60 },
-      { opacity: 1, y: 0, duration: 0.7, stagger: 0.2, ease: 'power3.out',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: 'power3.out',
         immediateRender: false,
-        scrollTrigger: {
-          trigger: '.projects-grid',
-          start: 'top 80%',
-          toggleActions: 'play none none none',
-        },
+        scrollTrigger: { trigger: '.projects-grid', start: 'top 85%', toggleActions: 'play none none none' },
       }
     )
   }, { scope: containerRef })
 
-  const featured = projects.filter((p) => p.featured)
-  const other = projects.filter((p) => !p.featured)
-
   return (
-    <section ref={containerRef} id="projects" className="section-padding relative z-10">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeading title="Projects" />
-
-        {/* Featured projects */}
-        <div className="projects-grid grid md:grid-cols-2 gap-6 mb-8">
-          {featured.map((project, i) => (
-            <div key={project.id} className="relative">
-              {/* Gradient decorative strip */}
-              <div className="bg-gradient-to-r from-primary to-secondary h-0.5 rounded-t-2xl" />
-              <ProjectCard project={project} index={i} featured />
-            </div>
-          ))}
-        </div>
-
-        {/* Other projects */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {other.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
-          ))}
-        </div>
+    <section ref={containerRef} className="max-w-6xl mx-auto px-6 py-16 border-b border-gray-200">
+      <SectionHeading icon={<Box />} title="Selected Projects" />
+      <div className="projects-grid grid md:grid-cols-2 gap-6">
+        {projects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
       </div>
     </section>
   )
