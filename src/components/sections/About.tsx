@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { MapPin, Mail, ExternalLink, Cpu, GraduationCap } from 'lucide-react'
+import { MapPin, Mail, ExternalLink, Cpu, GraduationCap, FileText } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
@@ -47,6 +47,17 @@ export function About() {
             <div className="flex items-center gap-2"><Mail size={18} /><a href="mailto:saurabhjalendra@gmail.com" className="hover:text-blue-600">saurabhjalendra@gmail.com</a></div>
             <div className="flex items-center gap-2"><ExternalLink size={18} /><a href="https://linkedin.com/in/saurabhjalendra" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">LinkedIn</a></div>
             <div className="flex items-center gap-2"><ExternalLink size={18} /><a href="https://github.com/SaurabhJalendra" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">GitHub</a></div>
+          </div>
+          <div className="mt-6">
+            <a
+              href="/cv.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors"
+            >
+              <FileText size={16} />
+              Download Resume
+            </a>
           </div>
         </div>
       </div>

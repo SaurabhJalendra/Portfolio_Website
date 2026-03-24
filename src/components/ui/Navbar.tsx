@@ -44,6 +44,14 @@ export function Navbar() {
           >
             Portfolio
           </Link>
+          <a
+            href="/cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-600 hover:text-black transition-colors"
+          >
+            Resume
+          </a>
 
           <div className="flex items-center gap-4 ml-4 pl-4 border-l border-gray-300">
             <a href="https://github.com/SaurabhJalendra" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-black transition-colors">
