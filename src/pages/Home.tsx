@@ -98,7 +98,7 @@ export function Home() {
                 >
                   <div className="flex items-start gap-4 md:gap-6">
                     {/* Number */}
-                    <span className="text-3xl md:text-4xl font-display font-bold text-white/[0.06] group-hover:text-primary/20 transition-colors duration-300 shrink-0 leading-none mt-1">
+                    <span className="text-3xl md:text-4xl font-display font-bold text-white/10 group-hover:text-primary/25 transition-colors duration-300 shrink-0 leading-none mt-1">
                       {String(i + 1).padStart(2, '0')}
                     </span>
 

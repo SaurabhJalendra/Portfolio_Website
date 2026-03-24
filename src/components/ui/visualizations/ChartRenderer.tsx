@@ -91,7 +91,7 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
   }, [chart.series])
 
   const commonProps = {
-    margin: { top: 10, right: 30, left: 10, bottom: 5 },
+    margin: { top: 10, right: 30, left: 20, bottom: 5 },
   }
 
   const yLabelProps = chart.ylabel
