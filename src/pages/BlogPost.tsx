@@ -94,7 +94,13 @@ export function BlogPost() {
 
           {/* Content */}
           <div className="blog-body prose prose-lg max-w-none">
-            <MarkdownWithViz content={'content' in post ? post.content : ''} />
+            {post.content && post.content.trim() !== '' ? (
+              <MarkdownWithViz content={post.content} />
+            ) : (
+              <div className="text-center py-16">
+                <p className="text-gray-500 text-lg">Coming soon. This post is still being written.</p>
+              </div>
+            )}
           </div>
 
           {/* Back to blog */}

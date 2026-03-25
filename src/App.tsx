@@ -5,6 +5,7 @@ import { Preloader } from './components/ui/Preloader'
 import { ScrollProgress } from './components/ui/ScrollProgress'
 import { PageTransition } from './components/ui/PageTransition'
 import { Navbar } from './components/ui/Navbar'
+import { Footer } from './components/ui/Footer'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -37,6 +38,7 @@ function AppContent() {
           </Routes>
         </PageTransition>
       </main>
+      <Footer />
     </>
   )
 }

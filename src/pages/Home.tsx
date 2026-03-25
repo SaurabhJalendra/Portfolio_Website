@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP)
 
 export function Home() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const postsWithContent = blogPosts.filter(p => p.content && p.content.trim() !== '')
 
   useGSAP(() => {
     gsap.fromTo('.hero-content',
@@ -51,11 +52,11 @@ export function Home() {
             <p className="text-gray-600">Deep technical ideas and research insights</p>
           </div>
 
-          {blogPosts.length === 0 ? (
+          {postsWithContent.length === 0 ? (
             <p className="text-gray-500 text-center py-16">No posts yet. Check back soon.</p>
           ) : (
             <div className="blog-feed space-y-8">
-              {blogPosts.map((post) => (
+              {postsWithContent.map((post) => (
                 <article key={post.slug} className="blog-article group">
                   <Link to={`/blog/${post.slug}`} className="block">
                     <div className="border border-gray-200 hover:border-gray-400 transition-all p-8 bg-white hover:shadow-lg hover:shadow-gray-100">

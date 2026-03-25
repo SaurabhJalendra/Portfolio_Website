@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Mail } from 'lucide-react'
+import { Mail, Menu, X } from 'lucide-react'
 
 function GithubIcon({ size = 18 }: { size?: number }) {
   return (
@@ -19,6 +20,18 @@ function LinkedinIcon({ size = 18 }: { size?: number }) {
 
 export function Navbar() {
   const location = useLocation()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const navLinks = [
+    { to: '/', label: 'Blog' },
+    { to: '/portfolio', label: 'Portfolio' },
+  ]
+
+  const socialLinks = [
+    { href: 'https://github.com/SaurabhJalendra', label: 'GitHub', icon: <GithubIcon size={18} /> },
+    { href: 'https://linkedin.com/in/saurabhjalendra', label: 'LinkedIn', icon: <LinkedinIcon size={18} /> },
+    { href: 'mailto:saurabhjalendra@gmail.com', label: 'Email', icon: <Mail size={18} /> },
+  ]
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
@@ -27,23 +40,19 @@ export function Navbar() {
           Saurabh Jalendra
         </Link>
 
-        <div className="flex items-center gap-8">
-          <Link
-            to="/"
-            className={`text-sm transition-colors ${
-              location.pathname === '/' ? 'text-black' : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            Blog
-          </Link>
-          <Link
-            to="/portfolio"
-            className={`text-sm transition-colors ${
-              location.pathname === '/portfolio' ? 'text-black' : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            Portfolio
-          </Link>
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`text-sm transition-colors ${
+                location.pathname === link.to ? 'text-black' : 'text-gray-600 hover:text-black'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
           <a
             href="/cv.pdf"
             target="_blank"
@@ -54,18 +63,73 @@ export function Navbar() {
           </a>
 
           <div className="flex items-center gap-4 ml-4 pl-4 border-l border-gray-300">
-            <a href="https://github.com/SaurabhJalendra" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-black transition-colors">
-              <GithubIcon size={18} />
-            </a>
-            <a href="https://linkedin.com/in/saurabhjalendra" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-black transition-colors">
-              <LinkedinIcon size={18} />
-            </a>
-            <a href="mailto:saurabhjalendra@gmail.com" className="text-gray-600 hover:text-black transition-colors">
-              <Mail size={18} />
-            </a>
+            {socialLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target={link.href.startsWith('mailto:') ? undefined : '_blank'}
+                rel={link.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                className="text-gray-600 hover:text-black transition-colors"
+              >
+                {link.icon}
+              </a>
+            ))}
           </div>
         </div>
+
+        {/* Mobile hamburger button */}
+        <button
+          className="md:hidden p-2 text-gray-600 hover:text-black transition-colors"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </nav>
+
+      {/* Mobile menu dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`text-sm py-2 transition-colors ${
+                  location.pathname === link.to ? 'text-black font-medium' : 'text-gray-600 hover:text-black'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href="/cv.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm py-2 text-gray-600 hover:text-black transition-colors"
+            >
+              Resume
+            </a>
+
+            <div className="flex items-center gap-4 pt-2 mt-2 border-t border-gray-200">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target={link.href.startsWith('mailto:') ? undefined : '_blank'}
+                  rel={link.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-gray-600 hover:text-black transition-colors"
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
