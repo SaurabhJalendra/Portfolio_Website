@@ -29,7 +29,7 @@ export function Navbar() {
 
   const socialLinks = [
     { href: 'https://github.com/SaurabhJalendra', label: 'GitHub', icon: <GithubIcon size={18} /> },
-    { href: 'https://linkedin.com/in/saurabhjalendra', label: 'LinkedIn', icon: <LinkedinIcon size={18} /> },
+    { href: 'https://www.linkedin.com/in/saurabhjalendra', label: 'LinkedIn', icon: <LinkedinIcon size={18} /> },
     { href: 'mailto:saurabhjalendra@gmail.com', label: 'Email', icon: <Mail size={18} /> },
   ]
 
