@@ -10,7 +10,9 @@ gsap.registerPlugin(ScrollTrigger, useGSAP)
 
 export function Home() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const postsWithContent = blogPosts.filter(p => p.content && p.content.trim() !== '')
+  const postsWithContent = blogPosts
+    .filter(p => p.content && p.content.trim() !== '')
+    .sort((a, b) => b.date.localeCompare(a.date))
 
   useGSAP(() => {
     gsap.fromTo('.hero-content',
