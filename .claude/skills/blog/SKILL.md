@@ -136,6 +136,42 @@ git commit -m "blog: YYYY-MM-DD - <title>"
 
 5. Ask: "Push to deploy?"
 
+### Phase 4: LinkedIn Post
+
+After the blog post is approved, generate a **LinkedIn post** to promote it:
+
+**Format:**
+- **Hook line** — provocative question or bold statement (1 line, grabs attention in the feed)
+- **2-3 short paragraphs** — the key insight from the blog post, written for a LinkedIn audience (less technical, more "why it matters")
+- **Bullet points** — 3-4 takeaways
+- **CTA** — "Full post with interactive charts and diagrams: [link]"
+- **Hashtags** — 3-5 relevant hashtags
+
+**Style rules:**
+- Max 200 words (LinkedIn truncates after ~3 lines, so the hook must be strong)
+- Write as Saurabh, first person
+- No buzzword salads — be specific about what you built/discovered
+- Include one surprising number or finding from the post
+- End with a question to drive engagement ("What do you think?" / "Has anyone tried this?")
+
+**Example format:**
+```
+[Hook — 1 provocative line]
+
+[2-3 short paragraphs explaining the idea]
+
+Key takeaways:
+→ [Takeaway 1]
+→ [Takeaway 2]  
+→ [Takeaway 3]
+
+Full post with interactive visualizations: https://saurabhjalendra.com/blog/[slug]
+
+#hashtag1 #hashtag2 #hashtag3
+```
+
+Present the LinkedIn post to the user for approval. They can copy-paste it directly.
+
 ## Notes Format
 
 Users write daily notes in `notes/YYYY-MM-DD.md`. Any format works:
