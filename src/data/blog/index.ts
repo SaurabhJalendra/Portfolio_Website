@@ -94,7 +94,7 @@ That's what I want to build. And I think Gemma 4 might be the right foundation.
 
 ## Why Gemma 4?
 
-\\\`\\\`\\\`chart:bar
+\`\`\`chart:bar
 title: Gemma 4 vs Open Models — Multi-Capability
 data:
   - label: Coding
@@ -110,7 +110,7 @@ data:
   - label: Instruction Following
     value: 83
 ylabel: Benchmark Score (%)
-\\\`\\\`\\\`
+\`\`\`
 
 Most open models specialize — DeepSeek Coder for code, Qwen-Math for math. Gemma 4 is different: it's genuinely strong across *all* capabilities. That's critical because I don't want five fine-tuned specialists — I want one model that can seamlessly shift between reasoning about a physics problem, brainstorming a startup idea, writing the code, and deploying it.
 
@@ -122,7 +122,7 @@ Key advantages:
 
 ## The Vision: Not a Coding Bot — A Thinking Partner
 
-\\\`\\\`\\\`diagram
+\`\`\`diagram
 graph TD
     A[Me] --> B[Personal AI on Gemma 4]
     B --> C[Deep Reasoning]
@@ -135,7 +135,7 @@ graph TD
     E --> L[Read papers and derive equations]
     F --> N[Write production code]
     G --> P[Run commands and manage projects]
-\\\`\\\`\\\`
+\`\`\`
 
 The difference from existing AI tools: this model would be trained to think *with me*, not just *for me*. It would know my research interests (RL, world models, quantum-inspired ML), my coding style, my projects, and my way of approaching problems.
 
@@ -145,7 +145,7 @@ Four phases, each building on the last. Start from Gemma 4's strong base, progre
 
 **Phase 1: Continued Pre-Training** — Deepen Gemma 4's knowledge with curated domain data.
 
-\\\`\\\`\\\`chart:bar
+\`\`\`chart:bar
 title: Pre-Training Data Mix
 data:
   - label: GitHub Code
@@ -159,7 +159,7 @@ data:
   - label: High-Quality Web
     value: 10
 ylabel: Mix Proportion (%)
-\\\`\\\`\\\`
+\`\`\`
 
 Data sources: The Stack v2 (3.3TB code), arXiv papers (2M+), Proof-Pile, OpenWebMath. The key question: what mix ratio prevents catastrophic forgetting while deepening expertise?
 
@@ -171,7 +171,7 @@ Data sources: The Stack v2 (3.3TB code), arXiv papers (2M+), Proof-Pile, OpenWeb
 
 ## The Agentic Architecture
 
-\\\`\\\`\\\`diagram
+\`\`\`diagram
 graph LR
     A[User Intent] --> B[Gemma 4 Agent]
     B --> C{What is needed?}
@@ -184,13 +184,13 @@ graph LR
     F --> H
     G --> H
     H --> B
-\\\`\\\`\\\`
+\`\`\`
 
 The model decides *what mode to operate in*: should it reason, research, code, or plan? And it chains these together — reason about a problem, write code to test the hypothesis, run it, analyze results.
 
 ## Cost Estimate
 
-\\\`\\\`\\\`chart:bar
+\`\`\`chart:bar
 title: Estimated Training Cost by Phase
 data:
   - label: Phase 1 Pre-Train
@@ -202,7 +202,7 @@ data:
   - label: Phase 4 Personal
     value: 200
 ylabel: Cost (USD)
-\\\`\\\`\\\`
+\`\`\`
 
 ~$23K total. The pragmatic path: start with Phase 4 ($200) on my own GPU, measure improvement, then decide if the full pipeline is worth the investment.
 
