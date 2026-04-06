@@ -32,7 +32,7 @@ export function Contact() {
           <a href="mailto:saurabhjalendra@gmail.com" className="px-6 py-3 bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors">
             Send Email
           </a>
-          <a href="https://www.linkedin.com/in/saurabhjalendra" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-gray-300 text-gray-700 font-medium hover:border-gray-400 transition-colors">
+          <a href="https://www.linkedin.com/in/saurabh-jalendra" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-gray-300 text-gray-700 font-medium hover:border-gray-400 transition-colors">
             Connect on LinkedIn
           </a>
         </div>

@@ -45,7 +45,7 @@ export function About() {
           <div className="flex flex-wrap gap-6 text-gray-600">
             <div className="flex items-center gap-2"><MapPin size={18} /><span>Jaipur, India (open to relocate)</span></div>
             <div className="flex items-center gap-2"><Mail size={18} /><a href="mailto:saurabhjalendra@gmail.com" className="hover:text-blue-600">saurabhjalendra@gmail.com</a></div>
-            <div className="flex items-center gap-2"><ExternalLink size={18} /><a href="https://www.linkedin.com/in/saurabhjalendra" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">LinkedIn</a></div>
+            <div className="flex items-center gap-2"><ExternalLink size={18} /><a href="https://www.linkedin.com/in/saurabh-jalendra" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">LinkedIn</a></div>
             <div className="flex items-center gap-2"><ExternalLink size={18} /><a href="https://github.com/SaurabhJalendra" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">GitHub</a></div>
           </div>
           <div className="mt-6">
