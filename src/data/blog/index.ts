@@ -252,20 +252,22 @@ This unconscious processing IS learning. Every moment, your brain is updating it
 ## How AI Trains vs How Brains Learn
 
 \`\`\`diagram
-graph LR
-    subgraph CurrentAI[Current AI Training]
-        A[Collect Dataset] --> B[Clean and Label]
-        B --> C[Batch Training]
-        C --> D[Freeze Model]
-        D --> E[Deploy]
-    end
-    subgraph BioLearn[Biological Learning]
-        F[Continuous Sensory Input] --> G[Real-Time Processing]
-        G --> H[Compression and Filtering]
-        H --> I[Update World Model]
-        I --> J[Never Stops]
-        J --> F
-    end
+graph TD
+    A[Collect Dataset] --> B[Clean and Label]
+    B --> C[Batch Training]
+    C --> D[Freeze Model]
+    D --> E[Deploy - Never Learns Again]
+\`\`\`
+
+**Biological learning is the opposite:**
+
+\`\`\`diagram
+graph TD
+    F[Continuous Sensory Input] --> G[Real-Time Processing]
+    G --> H[Compression and Filtering]
+    H --> I[Update World Model]
+    I --> J[Never Stops]
+    J --> F
 \`\`\`
 
 The differences are fundamental:
@@ -285,7 +287,7 @@ The brain's most impressive trick isn't processing 11 million bits per second â€
 
 \`\`\`diagram
 graph TD
-    A[11M bits/sec Raw Sensory Input] --> B[Retina and Cochlea and Receptors]
+    A[11M bits/sec Raw Sensory Input] --> B[Sensory Receptors]
     B --> C[Thalamus - Routing and Filtering]
     C --> D[Cortex - Pattern Recognition]
     D --> E[Hippocampus - Memory Consolidation]
