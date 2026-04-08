@@ -214,4 +214,130 @@ That's worth researching.
 
 Next step: auditing Gemma 4's existing performance on my actual tasks and prototyping Phase 4 — the personal LoRA fine-tune on my own hardware.`,
   },
+  {
+    slug: '2026-04-06-sensory-data-gap',
+    title: '11 Million Bits Per Second: The Data Gap Between Brains and AI',
+    date: '2026-04-06',
+    tags: ['ai-training', 'neuroscience', 'embodied-ai', 'multimodal', 'research'],
+    summary: 'Humans process 11 million bits of sensory data every second. AI trains on static datasets in batch runs. What would change if computers could learn from continuous sensory streams the way we do?',
+    readTime: '6 min read',
+    content: `Right now, as you read this, your brain is processing approximately 11 million bits of sensory data per second. Vision alone accounts for 10 million. Sound adds another million. Touch, smell, taste, proprioception — they all contribute to a continuous, unfiltered, multimodal data stream that your brain processes effortlessly, every waking moment.
+
+Now consider how we train AI: we collect a dataset, clean it, label it, batch it, and run a training loop for weeks on a GPU cluster. Then we freeze the model and deploy it. It never learns again.
+
+These two approaches to intelligence couldn't be more different. And I think that gap is the most important unsolved problem in AI.
+
+## The Numbers
+
+\`\`\`chart:bar
+title: Sensory Data Bandwidth (bits/sec)
+data:
+  - label: Vision
+    value: 10000000
+  - label: Touch
+    value: 1000000
+  - label: Hearing
+    value: 100000
+  - label: Smell
+    value: 100000
+  - label: Taste
+    value: 1000
+ylabel: bits/sec
+\`\`\`
+
+Humans ingest roughly 11 million bits per second through our senses. But here's the fascinating part: we're only *consciously aware* of about 50 bits per second. That means 99.9995% of sensory processing happens unconsciously — the brain is performing massive compression, pattern recognition, and filtering without us even knowing.
+
+This unconscious processing IS learning. Every moment, your brain is updating its model of the world.
+
+## How AI Trains vs How Brains Learn
+
+\`\`\`diagram
+graph LR
+    subgraph CurrentAI[Current AI Training]
+        A[Collect Dataset] --> B[Clean and Label]
+        B --> C[Batch Training]
+        C --> D[Freeze Model]
+        D --> E[Deploy]
+    end
+    subgraph BioLearn[Biological Learning]
+        F[Continuous Sensory Input] --> G[Real-Time Processing]
+        G --> H[Compression and Filtering]
+        H --> I[Update World Model]
+        I --> J[Never Stops]
+        J --> F
+    end
+\`\`\`
+
+The differences are fundamental:
+
+| Dimension | Current AI | Biological Brain |
+|-----------|-----------|-----------------|
+| Data input | Static datasets | Continuous streams |
+| Modalities | 1-2 (text, images) | 5+ simultaneous |
+| Learning | Batch, then freeze | Always on |
+| Compression | Tokenization | 11M to 50 bits/sec |
+| Embodiment | None | Full sensorimotor |
+| Adaptation | Requires retraining | Real-time |
+
+## The Compression Problem
+
+The brain's most impressive trick isn't processing 11 million bits per second — it's compressing them down to 50 bits of conscious experience while still learning from all of it.
+
+\`\`\`diagram
+graph TD
+    A[11M bits/sec Raw Sensory Input] --> B[Retina and Cochlea and Receptors]
+    B --> C[Thalamus - Routing and Filtering]
+    C --> D[Cortex - Pattern Recognition]
+    D --> E[Hippocampus - Memory Consolidation]
+    D --> F[50 bits/sec Conscious Awareness]
+    E --> G[Updated World Model]
+    G --> C
+\`\`\`
+
+Current AI architectures don't do anything like this. Transformers process tokens sequentially, with attention over a fixed context window. There's no continuous compression, no background learning, no unconscious processing.
+
+What if we built architectures that could?
+
+## What Would Need to Change
+
+**1. Continuous learning architectures** — Models that update their weights in real-time from streaming data, without catastrophic forgetting. Current approaches (EWC, progressive networks) are primitive compared to what the brain does.
+
+**2. Massive compression layers** — Something that takes raw sensory streams (video at 30fps, audio at 44kHz, sensor data) and compresses them into a learnable representation — the way the thalamus filters before the cortex processes.
+
+**3. Multi-timescale memory** — The brain has working memory (seconds), episodic memory (hours-years), and semantic memory (lifetime). AI has a context window. We need architectures with multiple timescales of memory and learning.
+
+**4. Embodiment** — Learning from sensory data requires having sensors. This means robots, IoT devices, or at minimum, always-on cameras and microphones feeding into a learning system.
+
+## The Compute Question
+
+Processing human-scale sensory data would require enormous compute. At 11 million bits/sec, a single day produces about 950 gigabits — nearly 120 gigabytes — of raw sensory data. Per person. Per day.
+
+\`\`\`chart:line
+title: Daily Sensory Data vs AI Training Data
+series:
+  - name: Human Sensory (cumulative GB)
+    data: [[0,0],[30,3600],[90,10800],[365,43200]]
+  - name: GPT-4 Training Data
+    data: [[0,13000],[30,13000],[90,13000],[365,13000]]
+xlabel: Days
+ylabel: Data Volume (GB)
+\`\`\`
+
+In just one year, a single human processes more raw data than GPT-4's entire training set. In a lifetime, it's not even comparable.
+
+But maybe the answer isn't more compute. The brain runs on about 20 watts. It doesn't need a GPU cluster — it needs a fundamentally different architecture. One that compresses, filters, and learns at the same time, in a single pass, on streaming data.
+
+## What This Means for AI
+
+If we solve continuous sensory learning, everything changes:
+- **No more dataset curation** — the model learns from experience, not curated examples
+- **No more training runs** — the model is always training, always improving
+- **True multimodal understanding** — not just text and images, but the full sensory spectrum
+- **Embodied intelligence** — robots that learn like children, through exploration
+- **Personalized AI** — a model that learns YOUR world, not the internet's average
+
+This is the gap between narrow AI and something approaching general intelligence. And it starts with taking seriously how biological systems actually learn: not from datasets, but from the raw, unfiltered, magnificent chaos of sensory experience.
+
+The question is: can we build the architecture that handles the firehose?`,
+  },
 ]
