@@ -251,24 +251,9 @@ This unconscious processing IS learning. Every moment, your brain is updating it
 
 ## How AI Trains vs How Brains Learn
 
-\`\`\`diagram
-graph TD
-    A[Collect Dataset] --> B[Clean and Label]
-    B --> C[Batch Training]
-    C --> D[Freeze Model]
-    D --> E[Deploy - Never Learns Again]
-\`\`\`
+**Current AI:** Collect Dataset → Clean → Batch Train → Freeze → Deploy (never learns again)
 
-**Biological learning is the opposite:**
-
-\`\`\`diagram
-graph TD
-    F[Continuous Sensory Input] --> G[Real-Time Processing]
-    G --> H[Compression and Filtering]
-    H --> I[Update World Model]
-    I --> J[Never Stops]
-    J --> F
-\`\`\`
+**Biological Brain:** Continuous Input → Real-Time Processing → Compress → Update World Model → Never Stops → Loop
 
 The differences are fundamental:
 
@@ -285,16 +270,7 @@ The differences are fundamental:
 
 The brain's most impressive trick isn't processing 11 million bits per second — it's compressing them down to 50 bits of conscious experience while still learning from all of it.
 
-\`\`\`diagram
-graph TD
-    A[11M bits/sec Raw Sensory Input] --> B[Sensory Receptors]
-    B --> C[Thalamus - Routing and Filtering]
-    C --> D[Cortex - Pattern Recognition]
-    D --> E[Hippocampus - Memory Consolidation]
-    D --> F[50 bits/sec Conscious Awareness]
-    E --> G[Updated World Model]
-    G --> C
-\`\`\`
+**The compression pipeline:** 11M bits/sec Raw Input → Sensory Receptors → Thalamus (routing) → Cortex (pattern recognition) → Hippocampus (memory) → 50 bits/sec Conscious Awareness. The updated world model feeds back into the thalamus — a continuous loop.
 
 Current AI architectures don't do anything like this. Transformers process tokens sequentially, with attention over a fixed context window. There's no continuous compression, no background learning, no unconscious processing.
 
