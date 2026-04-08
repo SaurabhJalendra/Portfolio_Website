@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { isValidElement, Children } from 'react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { ChartRenderer } from './ChartRenderer'
 import { DiagramRenderer } from './DiagramRenderer'
 
@@ -31,6 +32,7 @@ function isVisualizationLang(lang: string): boolean {
 export function MarkdownWithViz({ content }: MarkdownWithVizProps) {
   return (
     <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
       components={{
         // Override pre to pass through visualization blocks without a <pre> wrapper
         pre({ children }) {
