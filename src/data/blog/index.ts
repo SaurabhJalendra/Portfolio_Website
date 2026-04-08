@@ -340,4 +340,145 @@ This is the gap between narrow AI and something approaching general intelligence
 
 The question is: can we build the architecture that handles the firehose?`,
   },
+  {
+    slug: '2026-04-06-introducing-haze',
+    title: 'Introducing HAZE: A Benchmark for How AI Handles Bad Prompts',
+    date: '2026-04-06',
+    tags: ['benchmark', 'llm-evaluation', 'research', 'ambiguity', 'agentic-ai'],
+    summary: 'Most benchmarks test LLMs on perfect inputs. HAZE tests what happens when users write vague, incomplete, or contradictory prompts — and whether the model can figure out what they actually meant.',
+    readTime: '5 min read',
+    content: `"Sort this list." "Make it better." "Fix the bug."
+
+This is how real people talk to AI. Not carefully engineered prompts — messy, vague, incomplete instructions that assume the model can read their mind.
+
+And most of the time, the model just... guesses. It picks the most likely interpretation, produces a confident response, and moves on. Sometimes it's right. Often it's wrong. It almost never asks for clarification.
+
+I've been building a benchmark to measure this: **HAZE — Handling Ambiguous, Zero-clarity Expressions**.
+
+## What HAZE Measures
+
+Most benchmarks evaluate LLMs on well-formed inputs — HumanEval gives you a precise function signature, MMLU gives you a clear multiple-choice question. But real-world usage is nothing like this.
+
+HAZE evaluates the full ambiguity-handling loop:
+
+\`\`\`diagram
+graph TD
+    A[Ambiguous User Prompt] --> B{Stage 1: Detection}
+    B -->|Detected| C[Stage 2: Clarification]
+    B -->|Not Detected| D[Blind Guess - Scored Low]
+    C --> E{Good Questions?}
+    E -->|Yes| F[Stage 3: Completion]
+    E -->|No| G[Poor Clarification - Scored Medium]
+    F --> H{Correct Result?}
+    H -->|Yes| I[Full Score]
+    H -->|No| J[Partial Score]
+\`\`\`
+
+Three stages, scored independently:
+1. **Detection** — Does the model *notice* the prompt is ambiguous?
+2. **Clarification** — Does it ask the *right* questions to resolve the ambiguity?
+3. **Completion** — Does it *deliver* a correct result after clarifying?
+
+This reveals exactly *where* models fail. Some are great at detection but terrible at asking useful questions. Others ask good questions but still produce wrong output.
+
+## 7 Types of Ambiguity
+
+Not all vagueness is the same. HAZE categorizes ambiguity into 7 types:
+
+\`\`\`chart:bar
+title: HAZE Ambiguity Categories
+data:
+  - label: Underspecified
+    value: 280
+  - label: Contradictory
+    value: 180
+  - label: Implicit Assumption
+    value: 220
+  - label: Missing Context
+    value: 200
+  - label: Scope Unclear
+    value: 190
+  - label: Subjective Criteria
+    value: 230
+  - label: Multi-Interpretation
+    value: 200
+ylabel: Number of Instances
+\`\`\`
+
+- **Underspecified** — "Sort this list" (by what? ascending? descending?)
+- **Contradictory** — "Make it shorter but add more detail"
+- **Implicit assumption** — "Fix the bug" (which bug? what is the expected behavior?)
+- **Missing context** — "Write a function for this" (what language? what framework?)
+- **Scope unclear** — "Improve the code" (performance? readability? both?)
+- **Subjective criteria** — "Make it better" (better how?)
+- **Multi-interpretation** — "Table" (HTML table? database table? data table?)
+
+## Why Existing Benchmarks Fall Short
+
+\`\`\`chart:bar
+title: Benchmark Coverage Comparison
+data:
+  - label: CLAMBER
+    value: 35
+  - label: ClarEval
+    value: 40
+  - label: QuestBench
+    value: 30
+  - label: ClarifyMT
+    value: 25
+  - label: HAZE
+    value: 95
+ylabel: Coverage Score (%)
+\`\`\`
+
+Existing benchmarks each tackle a piece:
+- **CLAMBER** tests ambiguity detection but not clarification
+- **ClarEval** tests clarification quality but only for search queries
+- **QuestBench** evaluates question generation but not task completion
+- **ClarifyMT-Bench** covers multi-turn but only for translation
+
+None of them evaluate the *full interactive workflow* across multiple domains. HAZE does.
+
+## Multi-Domain Coverage
+
+HAZE spans 5 domains — because ambiguity looks different in code vs. creative writing vs. data analysis:
+
+\`\`\`diagram
+graph TD
+    A[HAZE Benchmark] --> B[Code Generation]
+    A --> C[Creative Writing]
+    A --> D[Data Analysis]
+    A --> E[General Assistance]
+    A --> F[Reasoning Tasks]
+    B --> G[1500 total instances]
+    C --> G
+    D --> G
+    E --> G
+    F --> G
+    G --> H[12+ Models Evaluated]
+    H --> I[Human Performance Baselines]
+\`\`\`
+
+A model that handles ambiguity well in code ("fix the bug") might fail completely in creative writing ("make it more engaging"). HAZE measures both.
+
+## By the Numbers
+
+- **~1,500 benchmark instances** across 5 domains and 7 ambiguity types
+- **12+ models** evaluated (GPT-4, Claude, Gemini, Llama, Mistral, and more)
+- **Human performance baselines** — how well do humans handle the same ambiguous prompts?
+- **Contamination analysis** — ensuring models haven't seen the test data
+- **Adversarial testing** — prompts designed to fool models into *not* asking for clarification
+
+## What We Are Finding
+
+Early results show a clear pattern: models are getting better at *generating* answers but not at *knowing when they don't have enough information*. The best models detect ambiguity about 60% of the time — meaning 40% of the time they just guess silently.
+
+The gap between detection and completion is even more revealing. Models that score 80%+ on detection often drop to 40% on completion — they know the prompt is vague but still can't deliver the right result after clarification.
+
+## What is Next
+
+HAZE is targeting the **NeurIPS/ICML Datasets and Benchmarks** track. The goal: push the field toward AI that doesn't just answer — it *understands what you actually meant*.
+
+The benchmark, evaluation code, and leaderboard will be open-sourced. If you are working on ambiguity handling or clarification in LLMs, I would love to collaborate.`,
+  },
 ]
