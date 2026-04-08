@@ -1,9 +1,8 @@
-import { useState, useCallback } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState, useCallback, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ReducedMotionProvider } from './components/ui/ReducedMotionProvider'
 import { Preloader } from './components/ui/Preloader'
 import { ScrollProgress } from './components/ui/ScrollProgress'
-import { PageTransition } from './components/ui/PageTransition'
 import { Navbar } from './components/ui/Navbar'
 import { Footer } from './components/ui/Footer'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
@@ -14,6 +13,15 @@ import { BlogPost } from './pages/BlogPost'
 import { Portfolio } from './pages/Portfolio'
 
 gsap.registerPlugin(ScrollTrigger)
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    setTimeout(() => ScrollTrigger.refresh(), 100)
+  }, [pathname])
+  return null
+}
 
 function AppContent() {
   const [loaded, setLoaded] = useState(false)
@@ -30,13 +38,12 @@ function AppContent() {
       <ScrollProgress />
       <Navbar />
       <main className="min-h-screen">
-        <PageTransition>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-          </Routes>
-        </PageTransition>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+        </Routes>
       </main>
       <Footer />
     </>
