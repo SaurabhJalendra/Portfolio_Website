@@ -90,24 +90,24 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
   }, [chart.series])
 
   const commonProps = {
-    margin: { top: 10, right: 30, left: 40, bottom: 5 },
+    margin: { top: 10, right: 20, left: 60, bottom: 20 },
   }
 
   const yLabelProps = chart.ylabel
-    ? { value: chart.ylabel, angle: -90, position: 'insideLeft' as const, fill: '#6b7280', fontSize: 12 }
+    ? { value: chart.ylabel, angle: -90, position: 'insideLeft' as const, fill: '#6b7280', fontSize: 11, offset: -45 }
     : undefined
 
   return (
-    <div className="my-8 p-6 bg-gray-50 border border-gray-200">
+    <div className="my-8 p-4 md:p-6 bg-gray-50 border border-gray-200 overflow-x-auto">
       {chart.title && (
         <h4 className="text-sm font-semibold text-black mb-4">{chart.title}</h4>
       )}
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={350}>
         {chart.type === 'bar' && chart.data ? (
           <BarChart data={chart.data} {...commonProps}>
             <CartesianGrid strokeDasharray="3 3" stroke={GRID_STROKE} />
-            <XAxis dataKey="label" tick={TICK_STYLE} />
-            <YAxis tick={TICK_STYLE} label={yLabelProps} />
+            <XAxis dataKey="label" tick={TICK_STYLE} angle={-20} textAnchor="end" height={50} />
+            <YAxis tick={TICK_STYLE} label={yLabelProps} width={70} tickFormatter={(v: number) => v >= 1000000 ? `${v/1000000}M` : v >= 1000 ? `${v/1000}K` : String(v)} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
             <Bar dataKey="value" fill="#2563eb" radius={[4, 4, 0, 0]} />
           </BarChart>
@@ -117,9 +117,10 @@ export function ChartRenderer({ content, chartType }: { content: string; chartTy
             <XAxis
               dataKey="x"
               tick={TICK_STYLE}
-              label={chart.xlabel ? { value: chart.xlabel, position: 'bottom', fill: '#6b7280', fontSize: 12 } : undefined}
+              label={chart.xlabel ? { value: chart.xlabel, position: 'bottom', fill: '#6b7280', fontSize: 11, offset: -10 } : undefined}
+              height={40}
             />
-            <YAxis tick={TICK_STYLE} label={yLabelProps} />
+            <YAxis tick={TICK_STYLE} label={yLabelProps} width={70} tickFormatter={(v: number) => v >= 1000000 ? `${v/1000000}M` : v >= 1000 ? `${v/1000}K` : String(v)} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
             <Legend />
             {chart.series.map((s, i) => (
