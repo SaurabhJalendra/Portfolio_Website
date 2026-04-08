@@ -91,6 +91,12 @@ export function MarkdownWithViz({ content }: MarkdownWithVizProps) {
         blockquote: ({ children }) => <blockquote className="border-l-4 border-blue-600 bg-blue-50 p-6 italic text-gray-700 my-4">{children}</blockquote>,
         strong: ({ children }) => <strong className="text-black font-semibold">{children}</strong>,
         hr: () => <hr className="border-gray-200 my-8" />,
+        table: ({ children }) => <div className="overflow-x-auto my-6"><table className="w-full border-collapse border border-gray-200 text-sm">{children}</table></div>,
+        thead: ({ children }) => <thead className="bg-gray-50">{children}</thead>,
+        tbody: ({ children }) => <tbody>{children}</tbody>,
+        tr: ({ children }) => <tr className="border-b border-gray-200">{children}</tr>,
+        th: ({ children }) => <th className="px-4 py-3 text-left font-semibold text-black border border-gray-200">{children}</th>,
+        td: ({ children }) => <td className="px-4 py-3 text-gray-700 border border-gray-200">{children}</td>,
       }}
     >
       {content}
