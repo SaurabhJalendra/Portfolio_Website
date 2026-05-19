@@ -660,7 +660,7 @@ export const PORTFOLIO_FS: PortfolioFS = {
 
   // Raw file contents. Keys match `path` above.
   files: {
-    'README.md': `# saurabhjalendra
+    'README.md': `# SaurabhJalendra
 
 > AI Research Engineer · world models, RL, AI safety · India-based, open to anywhere
 
