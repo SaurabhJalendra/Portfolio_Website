@@ -80,3 +80,5 @@ yarn-error.log*
 
 # NOTE: do NOT ignore _legacy/ — archived Vite site kept for rollback safety through Phase 7 soak.
 # It will be removed in Phase 8 (final cleanup).
+
+.vercel

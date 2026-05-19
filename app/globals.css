@@ -1,26 +1,54 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Global reset for the IDE shell. The IDE uses theme-driven inline styles
+ * everywhere, so this file only owns: html/body sizing, a small font-stack
+ * fallback, and "no scrollbars on the shell" rules. Themes are applied via
+ * React context, not CSS variables.
+ */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-family:
+    var(--font-ibm-plex-sans),
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background: #1f1f23;
+  color: #e6e6ed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+  /* The mobile path needs vertical scroll; we re-enable per element. */
+}
+
+/* Mobile path renders a tall vertical layout; let it scroll. */
+@media (max-width: 899px) {
+  body {
+    overflow: auto;
+  }
+}
+
+/* Suppress default focus ring on draggable tabs etc.; components handle
+   their own focus visualizations. */
+button {
+  font-family: inherit;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

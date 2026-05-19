@@ -18,6 +18,20 @@ function IDETweaks({ tweaks, setTweak }) {
         />
       </TweakSection>
 
+      <TweakSection label="Assistant">
+        <TweakRadio
+          label="Avatar"
+          value={tweaks.avatar}
+          onChange={(v) => setTweak('avatar', v)}
+          options={[
+            { value: '>_',  label: '>_' },
+            { value: '?:',  label: '?:' },
+            { value: 'SJ',  label: 'SJ' },
+            { value: 'dot', label: '●'  },
+          ]}
+        />
+      </TweakSection>
+
       <TweakSection label="Theme">
         <TweakSelect
           label="Palette"
@@ -46,6 +60,11 @@ function IDETweaks({ tweaks, setTweak }) {
       </TweakSection>
 
       <TweakSection label="Layout">
+        <TweakToggle
+          label="Primary sidebar"
+          value={tweaks.sidebar !== false}
+          onChange={(v) => setTweak('sidebar', v)}
+        />
         <TweakToggle
           label="Assistant panel"
           value={tweaks.assistant}

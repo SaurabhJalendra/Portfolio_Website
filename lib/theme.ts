@@ -3,7 +3,10 @@
 // border, fg, fgDim, accent) are referenced by every component; the syntax
 // colors (hdr*, jsonKey, …) are consumed by editor.jsx via the highlighter.
 
-window.IDE_THEMES = {
+import { createContext } from 'react';
+import type { Theme, Themes } from '@/types/ide';
+
+export const IDE_THEMES: Themes = {
   midnight: {
     name: 'Midnight (default)',
     accent: '#c8a4ff',
@@ -246,4 +249,4 @@ window.IDE_THEMES = {
 };
 
 // React context for the active theme.
-window.ThemeCtx = React.createContext(window.IDE_THEMES.midnight);
+export const ThemeCtx = createContext<Theme>(IDE_THEMES.midnight);

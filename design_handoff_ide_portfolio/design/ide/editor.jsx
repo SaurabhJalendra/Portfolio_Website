@@ -4,9 +4,10 @@
 
 const { useEffect: useEffectE, useRef: useRefE, useState: useStateE, useMemo, useContext: useCtxE } = React;
 
-function Breadcrumb({ path }) {
+function Breadcrumb({ path, lang, viewMode, setViewMode }) {
   const T = useCtxE(window.ThemeCtx);
   const parts = path ? path.split('/') : [];
+  const canPreview = lang === 'md';
   return (
     <div style={{
       display:'flex', alignItems:'center', gap:6, padding:'4px 14px',
@@ -21,12 +22,48 @@ function Breadcrumb({ path }) {
           <span style={{color: i === parts.length - 1 ? T.chrome.fg : T.chrome.fgFainter}}>{p}</span>
         </React.Fragment>
       ))}
+      <div style={{flex:1}}/>
+      {canPreview && (
+        <div style={{
+          display:'flex', background: T.chrome.hoverBg, borderRadius:5, padding:1,
+          marginRight:-4,
+        }}>
+          {['code', 'preview'].map(mode => {
+            const active = viewMode === mode;
+            return (
+              <button key={mode} onClick={() => setViewMode(mode)} title={mode === 'preview' ? 'Open preview · ⇧⌘V' : 'Show source'}
+                style={{
+                  padding:'2px 8px', border:0, borderRadius:4, cursor:'pointer',
+                  background: active ? T.chrome.tabActive : 'transparent',
+                  color: active ? T.chrome.fg : T.chrome.fgDim,
+                  fontFamily:'inherit', fontSize:11,
+                  transition:'background .12s, color .12s',
+                }}
+              >{mode === 'code' ? 'source' : 'preview'}</button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
-function TabStrip({ tabs, active, setActive, closeTab }) {
+function TabStrip({ tabs, active, setActive, closeTab, moveTab }) {
   const T = useCtxE(window.ThemeCtx);
+  const [closing, setClosing] = useStateE(() => new Set());
+  const [dragOver, setDragOver] = useStateE(null);  // path the user is hovering over
+  const [dragging, setDragging] = useStateE(null);  // path being dragged
+
+  // Animate-out, then remove. Keeps the close click feeling weighty.
+  function handleClose(p, e) {
+    if (e) e.stopPropagation();
+    setClosing(prev => { const n = new Set(prev); n.add(p); return n; });
+    setTimeout(() => {
+      closeTab(p);
+      setClosing(prev => { const n = new Set(prev); n.delete(p); return n; });
+    }, 180);
+  }
+
   return (
     <div style={{
       display:'flex', background: T.chrome.titlebar,
@@ -36,25 +73,41 @@ function TabStrip({ tabs, active, setActive, closeTab }) {
     }}>
       {tabs.map(p => {
         const isActive = p === active;
+        const isClosing = closing.has(p);
         const name = p.split('/').pop();
         const lang = window.PORTFOLIO_FS.tree.find?.(n => n.path === p)?.lang || 'md';
         const iconColor = lang === 'json' ? T.syntax.jsonNum : lang === 'yaml' ? T.syntax.yamlKey : T.syntax.hdr1;
         return (
           <div key={p}
-            onClick={() => setActive(p)}
+            data-tab-path={p}
+            draggable={!isClosing}
+            onDragStart={(e) => { setDragging(p); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', p); }}
+            onDragEnd={() => { setDragging(null); setDragOver(null); }}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; if (dragging && dragging !== p) setDragOver(p); }}
+            onDragLeave={() => { if (dragOver === p) setDragOver(null); }}
+            onDrop={(e) => { e.preventDefault(); if (dragging && moveTab) moveTab(dragging, p); setDragging(null); setDragOver(null); }}
+            onClick={() => !isClosing && setActive(p)}
+            className="ide-tab"
             style={{
-              display:'flex', alignItems:'center', gap:8,
+              display:'flex', alignItems:'center', gap: isClosing ? 0 : 8,
               flex:'0 0 auto', whiteSpace:'nowrap',
-              padding:'8px 12px 8px 14px',
-              background: isActive ? T.chrome.tabActive : 'transparent',
+              paddingLeft: isClosing ? 0 : 14,
+              paddingRight: isClosing ? 0 : 12,
+              paddingTop: 8, paddingBottom: 8,
+              maxWidth: isClosing ? 0 : 180,
+              opacity: isClosing ? 0 : (dragging === p ? 0.4 : 1),
+              overflow:'hidden',
+              background: dragOver === p ? T.chrome.selBg
+                       : (isActive ? T.chrome.tabActive : 'transparent'),
               color: isActive ? T.chrome.fg : T.chrome.fgDim,
-              fontSize:12.5, cursor:'pointer',
+              fontSize:12.5, cursor: isClosing ? 'default' : (dragging ? 'grabbing' : 'pointer'),
               borderRight:'1px solid '+T.chrome.border,
               borderTop: '2px solid ' + (isActive ? T.accent : 'transparent'),
+              borderLeft: dragOver === p ? '2px solid ' + T.accent : '2px solid transparent',
               marginTop:-1, position:'relative',
               fontFamily:'"IBM Plex Mono",monospace',
-              transition:'background .12s, color .12s',
-              maxWidth: 180,
+              transition: 'max-width .18s ease-out, padding .18s ease-out, opacity .18s ease-out, background .12s, color .12s, gap .18s ease-out, border-left-color .12s',
+              animation: 'sj-tab-in .22s cubic-bezier(.2,.7,.3,1)',
             }}
           >
             <span style={{color: iconColor, fontFamily:'"Geist Mono",monospace', fontSize:10, fontWeight:700, flex:'0 0 auto'}}>
@@ -62,12 +115,12 @@ function TabStrip({ tabs, active, setActive, closeTab }) {
             </span>
             <span style={{overflow:'hidden', textOverflow:'ellipsis'}}>{name}</span>
             <button
-              onClick={(e) => { e.stopPropagation(); closeTab(p); }}
+              onClick={(e) => handleClose(p, e)}
               style={{
                 background:'transparent', border:0, color:T.chrome.fgFainter,
                 width:18, height:18, borderRadius:4, padding:0, cursor:'pointer',
                 display:'flex', alignItems:'center', justifyContent:'center',
-                marginLeft:4, fontSize:14, lineHeight:1,
+                marginLeft:4, fontSize:14, lineHeight:1, flex:'0 0 auto',
               }}
               onMouseEnter={(e) => e.currentTarget.style.background = T.chrome.hoverBg}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
@@ -77,6 +130,12 @@ function TabStrip({ tabs, active, setActive, closeTab }) {
         );
       })}
       <div style={{flex:1, borderBottom:'1px solid '+T.chrome.border, minWidth: 12}}/>
+      <style>{`
+        @keyframes sj-tab-in {
+          from { max-width: 0; opacity: 0; padding-left: 0; padding-right: 0; }
+          to   { max-width: 180px; opacity: 1; padding-left: 14px; padding-right: 12px; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -118,9 +177,47 @@ function CodeBody({ body, lang, motion, tabKey, completedRef, caretLine, scrollK
   const totalLines = body.split('\n').length;
 
   const scrollRef = useRefE(null);
+  const [flashLine, setFlashLine] = useStateE(-1);
+
   useEffectE(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [scrollKey]);
+
+  // Install a jump-to-line handler that the outline panel can call.
+  // Scrolls the editor so the target line sits near the top, then briefly
+  // flashes that line so the eye lands on it.
+  useEffectE(() => {
+    window.IDE_JUMP_TO = (lineIdx) => {
+      if (!scrollRef.current) return;
+      const rowHeight = 13 * 1.7; // matches fontSize 13 · lineHeight 1.7
+      scrollRef.current.scrollTo({ top: Math.max(0, lineIdx * rowHeight - 14), behavior: 'smooth' });
+      setFlashLine(lineIdx);
+      setTimeout(() => setFlashLine(-1), 1200);
+    };
+    return () => { if (window.IDE_JUMP_TO) delete window.IDE_JUMP_TO; };
+  }, [scrollKey]);
+
+  // Scroll-spy: as the editor body scrolls, find the latest heading at or
+  // above the viewport top, and emit a 'sj-active-heading' event so the
+  // outline panel can highlight it.
+  useEffectE(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const fireSpy = () => {
+      const rowHeight = 13 * 1.7;
+      const topLine = Math.max(0, Math.floor((el.scrollTop + 14) / rowHeight));
+      const headings = window.extractOutline ? window.extractOutline(body) : [];
+      let active = -1;
+      for (const h of headings) {
+        if (h.line <= topLine) active = h.line;
+        else break;
+      }
+      window.dispatchEvent(new CustomEvent('sj-active-heading', { detail: { line: active, path: scrollKey } }));
+    };
+    el.addEventListener('scroll', fireSpy, { passive: true });
+    fireSpy();
+    return () => el.removeEventListener('scroll', fireSpy);
+  }, [scrollKey, body]);
 
   // Blink the cursor on the last line.
   const [caretOn, setCaretOn] = useStateE(true);
@@ -129,6 +226,9 @@ function CodeBody({ body, lang, motion, tabKey, completedRef, caretLine, scrollK
     return () => clearInterval(id);
   }, []);
 
+  // The "active" line is the one the caret is on — last rendered line.
+  const activeLineIdx = lines.length - 1;
+
   return (
     <div ref={scrollRef} style={{
       flex:1, overflow:'auto',
@@ -136,32 +236,41 @@ function CodeBody({ body, lang, motion, tabKey, completedRef, caretLine, scrollK
       fontFamily:'"Geist Mono","JetBrains Mono","IBM Plex Mono",ui-monospace,monospace',
       fontSize: 13, lineHeight: 1.7,
     }}>
-      {lines.map((toks, i) => (
-        <div key={i} style={{display:'flex', padding:'0 14px'}}>
-          <span style={{
-            display:'inline-block', width:48, textAlign:'right', paddingRight:18,
-            color: i === lines.length - 1 ? T.chrome.fg : T.chrome.gutter,
-            userSelect:'none', fontVariantNumeric:'tabular-nums',
-          }}>{i + 1}</span>
-          <span style={{flex:1, color:T.syntax.text, whiteSpace:'pre-wrap'}}>
-            {toks.map((tok, j) => (
-              <span key={j} style={tokenStyle(tok.t, T)}>{tok.v}</span>
-            ))}
-            {i === lines.length - 1 && shown < body.length && (
-              <span style={{
-                display:'inline-block', width:7, height:'1em', verticalAlign:'-2px',
-                background: T.accent, marginLeft: 1,
-              }}/>
-            )}
-            {i === lines.length - 1 && shown >= body.length && (
-              <span style={{
-                display:'inline-block', width:7, height:'1em', verticalAlign:'-2px',
-                background: caretOn ? T.accent : 'transparent', marginLeft: 1,
-              }}/>
-            )}
-          </span>
-        </div>
-      ))}
+      {lines.map((toks, i) => {
+        const isActive = i === activeLineIdx;
+        const isFlash  = i === flashLine;
+        return (
+          <div key={i} style={{
+            display:'flex', padding:'0 14px',
+            background: isFlash ? T.chrome.selBg : (isActive ? T.chrome.hoverBg : 'transparent'),
+            animation: isFlash ? 'sj-flash 1.1s ease-out' : undefined,
+            transition: isActive && !isFlash ? 'background .15s ease-out' : undefined,
+          }}>
+            <span style={{
+              display:'inline-block', width:48, textAlign:'right', paddingRight:18,
+              color: isActive ? T.chrome.fg : T.chrome.gutter,
+              userSelect:'none', fontVariantNumeric:'tabular-nums',
+            }}>{i + 1}</span>
+            <span style={{flex:1, color:T.syntax.text, whiteSpace:'pre-wrap'}}>
+              {toks.map((tok, j) => (
+                <span key={j} style={tokenStyle(tok.t, T)}>{tok.v}</span>
+              ))}
+              {i === lines.length - 1 && shown < body.length && (
+                <span style={{
+                  display:'inline-block', width:7, height:'1em', verticalAlign:'-2px',
+                  background: T.accent, marginLeft: 1,
+                }}/>
+              )}
+              {i === lines.length - 1 && shown >= body.length && (
+                <span style={{
+                  display:'inline-block', width:7, height:'1em', verticalAlign:'-2px',
+                  background: caretOn ? T.accent : 'transparent', marginLeft: 1,
+                }}/>
+              )}
+            </span>
+          </div>
+        );
+      })}
       {/* Phantom lines to keep gutter visible even when content is short */}
       {Array.from({length: Math.max(0, 6)}).map((_, i) => (
         <div key={'p'+i} style={{display:'flex', padding:'0 14px'}}>
@@ -171,6 +280,7 @@ function CodeBody({ body, lang, motion, tabKey, completedRef, caretLine, scrollK
           <span/>
         </div>
       ))}
+      <style>{`@keyframes sj-flash { 0%{ background: ${T.chrome.selBg}; } 60%{ background: ${T.chrome.selBg}; } 100%{ background: transparent; } }`}</style>
     </div>
   );
 }
@@ -227,9 +337,10 @@ function Minimap({ body, lang, scrollKey }) {
   );
 }
 
-function EditorPane({ tabs, active, setActive, closeTab, motion, showMinimap }) {
+function EditorPane({ tabs, active, setActive, closeTab, moveTab, motion, showMinimap }) {
   const T = useCtxE(window.ThemeCtx);
   const completedRef = useRefE({}); // remembers which tabs have finished typing
+  const [viewModes, setViewModes] = useStateE({}); // { path: 'code' | 'preview' }
 
   if (!active) {
     const platform = React.useContext(window.PlatformCtx);
@@ -254,6 +365,9 @@ function EditorPane({ tabs, active, setActive, closeTab, motion, showMinimap }) 
   const body = window.PORTFOLIO_FS.files[active] || '(file not found)';
   const lang = (window.PORTFOLIO_FS.tree.find?.(n => n.path === active) || {}).lang
              || flattenLang(active);
+  const viewMode = viewModes[active] || 'code';
+  const setViewMode = (m) => setViewModes(prev => ({...prev, [active]: m}));
+  const showPreview = viewMode === 'preview' && lang === 'md';
 
   return (
     <>
@@ -261,11 +375,14 @@ function EditorPane({ tabs, active, setActive, closeTab, motion, showMinimap }) 
         gridArea:'editor', background: T.chrome.editor,
         display:'flex', flexDirection:'column', overflow:'hidden',
       }}>
-        <TabStrip tabs={tabs} active={active} setActive={setActive} closeTab={closeTab}/>
-        <Breadcrumb path={active}/>
-        <CodeBody body={body} lang={lang} motion={motion} tabKey={active} completedRef={completedRef} scrollKey={active}/>
+        <TabStrip tabs={tabs} active={active} setActive={setActive} closeTab={closeTab} moveTab={moveTab}/>
+        <Breadcrumb path={active} lang={lang} viewMode={viewMode} setViewMode={setViewMode}/>
+        {showPreview
+          ? <window.MarkdownPreview body={body} openFile={setActive}/>
+          : <CodeBody body={body} lang={lang} motion={motion} tabKey={active} completedRef={completedRef} scrollKey={active}/>}
       </div>
-      {showMinimap && <Minimap body={body} lang={lang} scrollKey={active}/>}
+      {showMinimap && !showPreview && <Minimap body={body} lang={lang} scrollKey={active}/>}
+      {showMinimap && showPreview && <div style={{gridArea:'minimap', background: T.chrome.sidebar, borderLeft:'1px solid '+T.chrome.border}}/>}
     </>
   );
 }

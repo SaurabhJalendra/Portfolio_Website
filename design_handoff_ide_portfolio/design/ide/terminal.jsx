@@ -115,7 +115,7 @@ function Terminal({ openFile, setTheme, themeName, visible, onClose }) {
         {history.map((l, i) => <TermLine key={i} line={l} T={T}/>)}
         {/* Live input line */}
         <div style={{display:'flex', alignItems:'baseline'}}>
-          <span style={{color:'#7be39a'}}>saurabh@portfolio</span>
+          <span style={{color:T.terminal.prompt}}>saurabh@portfolio</span>
           <span style={{color:T.chrome.fgFainter, margin:'0 6px'}}>:~$</span>
           <input
             ref={inputRef}
@@ -125,7 +125,7 @@ function Terminal({ openFile, setTheme, themeName, visible, onClose }) {
             spellCheck={false}
             autoComplete="off"
             style={{
-              flex:1, background:'transparent', border:0, outline:'none', color:T.chrome.fg,
+              flex:1, background:'transparent', border:0, outline:'none', color:T.terminal.fg,
               fontFamily:'inherit', fontSize:'inherit',
             }}
           />
@@ -136,18 +136,26 @@ function Terminal({ openFile, setTheme, themeName, visible, onClose }) {
 }
 
 function TermLine({ line, T }) {
+  // Resolve role names (ok / err / warn / info / bright / accent / dim) into
+  // theme colors; pass-through any literal value (hex/rgba) for one-offs.
+  const resolve = (c) => {
+    if (!c) return T.terminal.fg;
+    if (typeof c !== 'string') return c;
+    if (c[0] === '#' || c.startsWith('rgb') || c.startsWith('hsl')) return c;
+    if (c === 'accent') return T.accent;
+    return T.terminal[c] || T.terminal.fg;
+  };
   if (line.kind === 'prompt') return (
     <div>
-      <span style={{color:'#7be39a'}}>saurabh@portfolio</span>
+      <span style={{color:T.terminal.prompt}}>saurabh@portfolio</span>
       <span style={{color:T.chrome.fgFainter, margin:'0 6px'}}>:~$</span>
-      <span style={{color:T.chrome.fg}}>{line.text}</span>
+      <span style={{color:T.terminal.fg}}>{line.text}</span>
     </div>
   );
   if (line.kind === 'banner') return (
-    <pre style={{margin:0, color:'#7be39a', textShadow:'0 0 8px rgba(126,229,155,0.35)', fontSize:11, lineHeight:1.1}}>{line.text}</pre>
+    <pre style={{margin:0, color:T.terminal.banner, textShadow:'0 0 8px '+T.terminal.bannerGlow, fontSize:11, lineHeight:1.1}}>{line.text}</pre>
   );
-  const c = line.color || T.chrome.fg;
-  return <div style={{color: c, whiteSpace: 'pre-wrap'}}>{line.text}</div>;
+  return <div style={{color: resolve(line.color), whiteSpace: 'pre-wrap'}}>{line.text}</div>;
 }
 
 function bootHistory(mod) {
@@ -160,7 +168,7 @@ function bootHistory(mod) {
   ╚════██║██   ██║
   ███████║╚█████╔╝
   ╚══════╝ ╚════╝   saurabhjalendra.com`},
-    { kind:'out', text:'welcome — try `help` or `ls`. press ' + m + 'J to hide me.', color:'#a8c5b0' },
+    { kind:'out', text:'welcome — try `help` or `ls`. press ' + m + 'J to hide me.', color:'info' },
     { kind:'out', text:'' },
   ];
 }
@@ -173,7 +181,7 @@ function exec(cmd, args, { openFile, setTheme, themeName }) {
 
   if (cmd === 'help' || cmd === '?') {
     return [
-      { kind:'out', text:'commands:', color:'#7be39a' },
+      { kind:'out', text:'commands:', color:'ok' },
       { kind:'out', text:'  ls [path]        list files' },
       { kind:'out', text:'  cat <file>       print file contents' },
       { kind:'out', text:'  open <file>      open in editor' },
@@ -183,7 +191,7 @@ function exec(cmd, args, { openFile, setTheme, themeName }) {
       { kind:'out', text:'  now              current focus' },
       { kind:'out', text:'  theme [name]     midnight | phosphor | paper | solar' },
       { kind:'out', text:'  clear            clear scrollback (⌃L)' },
-      { kind:'out', text:'  curl ' + 'saurabhjalendra.com', color:'#a8c5b0' },
+      { kind:'out', text:'  curl ' + 'saurabhjalendra.com', color:'info' },
       { kind:'out', text:'' },
     ];
   }
@@ -195,36 +203,36 @@ function exec(cmd, args, { openFile, setTheme, themeName }) {
         ...P.tree.map(n => ({
           kind:'out',
           text: n.type === 'dir' ? n.path + '/' : n.path,
-          color: n.type === 'dir' ? '#c8a4ff' : undefined,
+          color: n.type === 'dir' ? 'accent' : undefined,
         })),
         { kind:'out', text:'' },
       ];
     }
     const dir = P.tree.find(n => n.path === target.replace(/\/$/, '') && n.type === 'dir');
     if (dir) return [...dir.children.map(c => ({kind:'out', text: c.path})), {kind:'out', text:''}];
-    return [{ kind:'out', text:'ls: no such directory: ' + target, color:'#ff8a8a' }, {kind:'out', text:''}];
+    return [{ kind:'out', text:'ls: no such directory: ' + target, color:'err' }, {kind:'out', text:''}];
   }
 
   if (cmd === 'cat') {
     const file = args[0];
-    if (!file) return [{kind:'out', text:'cat: missing file', color:'#ff8a8a'}, {kind:'out', text:''}];
+    if (!file) return [{kind:'out', text:'cat: missing file', color:'err'}, {kind:'out', text:''}];
     const body = P.files[file];
-    if (!body) return [{kind:'out', text:'cat: ' + file + ': no such file', color:'#ff8a8a'}, {kind:'out', text:''}];
+    if (!body) return [{kind:'out', text:'cat: ' + file + ': no such file', color:'err'}, {kind:'out', text:''}];
     return [...body.split('\n').map(l => ({kind:'out', text: l})), {kind:'out', text:''}];
   }
 
   if (cmd === 'open') {
     const file = args[0];
-    if (!file) return [{kind:'out', text:'open: missing file', color:'#ff8a8a'}, {kind:'out', text:''}];
-    if (!P.files[file]) return [{kind:'out', text:'open: ' + file + ': no such file', color:'#ff8a8a'}, {kind:'out', text:''}];
+    if (!file) return [{kind:'out', text:'open: missing file', color:'err'}, {kind:'out', text:''}];
+    if (!P.files[file]) return [{kind:'out', text:'open: ' + file + ': no such file', color:'err'}, {kind:'out', text:''}];
     openFile?.(file);
-    return [{kind:'out', text:'→ opened ' + file, color:'#7be39a'}, {kind:'out', text:''}];
+    return [{kind:'out', text:'→ opened ' + file, color:'ok'}, {kind:'out', text:''}];
   }
 
   if (cmd === 'whoami') {
     return [
-      {kind:'out', text:'Saurabh Jalendra', color:'#fff'},
-      {kind:'out', text:'[Engineer · Product Builder]', color:'#a8c5b0'},
+      {kind:'out', text:'Saurabh Jalendra', color:'bright'},
+      {kind:'out', text:'[Engineer · Product Builder]', color:'info'},
       {kind:'out', text:'available Q3 2026 — hello@saurabhjalendra.com'},
       {kind:'out', text:''},
     ];
@@ -243,7 +251,7 @@ function exec(cmd, args, { openFile, setTheme, themeName }) {
 
   if (cmd === 'contact') {
     return [
-      {kind:'out', text:'email     hello@saurabhjalendra.com', color:'#fff'},
+      {kind:'out', text:'email     hello@saurabhjalendra.com', color:'bright'},
       {kind:'out', text:'github    @saurabhjalendra'},
       {kind:'out', text:'linkedin  in/saurabhjalendra'},
       {kind:'out', text:'response  median 24h · worst 72h'},
@@ -256,12 +264,12 @@ function exec(cmd, args, { openFile, setTheme, themeName }) {
   }
 
   if (cmd === 'theme') {
-    if (!args[0]) return [{kind:'out', text:'current theme: ' + themeName, color:'#a8c5b0'}, {kind:'out', text:'available: midnight, phosphor, paper, solar'}, {kind:'out', text:''}];
+    if (!args[0]) return [{kind:'out', text:'current theme: ' + themeName, color:'info'}, {kind:'out', text:'available: midnight, phosphor, paper, solar'}, {kind:'out', text:''}];
     if (window.IDE_THEMES[args[0]]) {
       setTheme(args[0]);
-      return [{kind:'out', text:'theme → ' + args[0], color:'#7be39a'}, {kind:'out', text:''}];
+      return [{kind:'out', text:'theme → ' + args[0], color:'ok'}, {kind:'out', text:''}];
     }
-    return [{kind:'out', text:'no such theme: ' + args[0], color:'#ff8a8a'}, {kind:'out', text:''}];
+    return [{kind:'out', text:'no such theme: ' + args[0], color:'err'}, {kind:'out', text:''}];
   }
 
   if (cmd === 'clear') {
@@ -277,23 +285,23 @@ function exec(cmd, args, { openFile, setTheme, themeName }) {
 
   if (cmd === 'curl') {
     return [
-      {kind:'out', text:'HTTP/2 200', color:'#7be39a'},
+      {kind:'out', text:'HTTP/2 200', color:'ok'},
       {kind:'out', text:'server: portfolio'},
       {kind:'out', text:'content-type: text/html; charset=utf-8'},
       {kind:'out', text:''},
-      {kind:'out', text:'<!-- you found the curl. nice. -->', color:'#a8c5b0'},
+      {kind:'out', text:'<!-- you found the curl. nice. -->', color:'info'},
       {kind:'out', text:'<p>hi — i make things. hello@saurabhjalendra.com</p>'},
       {kind:'out', text:''},
     ];
   }
 
-  if (cmd === 'sudo') return [{kind:'out', text:'nice try.', color:'#ffa86b'}, {kind:'out', text:''}];
-  if (cmd === 'rm' && args.includes('-rf')) return [{kind:'out', text:'… let\'s not.', color:'#ffa86b'}, {kind:'out', text:''}];
+  if (cmd === 'sudo') return [{kind:'out', text:'nice try.', color:'warn'}, {kind:'out', text:''}];
+  if (cmd === 'rm' && args.includes('-rf')) return [{kind:'out', text:'… let\'s not.', color:'warn'}, {kind:'out', text:''}];
 
   // unknown
   return [
-    {kind:'out', text:'zsh: command not found: ' + cmd, color:'#ff8a8a'},
-    {kind:'out', text:'try `help` for the list', color:'#a8c5b0'},
+    {kind:'out', text:'zsh: command not found: ' + cmd, color:'err'},
+    {kind:'out', text:'try `help` for the list', color:'info'},
     {kind:'out', text:''},
   ];
 }
