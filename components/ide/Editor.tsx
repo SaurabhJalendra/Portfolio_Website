@@ -596,7 +596,10 @@ export default function EditorPane({
   const body = PORTFOLIO_FS.files[active] || '(file not found)';
   const found = (PORTFOLIO_FS.tree as FSNode[]).find((n) => n.path === active);
   const lang = (found && 'lang' in found ? found.lang : flattenLang(active)) || 'md';
-  const viewMode = viewModes[active] || 'code';
+  // Smart default: markdown files open in preview mode (visitors want to READ);
+  // JSON/YAML/INI open in code mode (the IDE metaphor lives in the data-format files).
+  // User toggle via ⇧⌘V or breadcrumb segmented control still works per-tab.
+  const viewMode = viewModes[active] || (lang === 'md' ? 'preview' : 'code');
   const setViewMode = (m: 'code' | 'preview') => setViewModes((prev) => ({ ...prev, [active]: m }));
   const showPreview = viewMode === 'preview' && lang === 'md';
 
