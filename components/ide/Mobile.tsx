@@ -212,7 +212,7 @@ function Hero({ T }: { T: Theme }) {
           fontFamily: '"Geist Mono",monospace',
         }}
       >
-        [Engineer · Product Builder] · IST
+        AI Research Engineer · Co-Founder @ SKY AI · Jaipur, IST
       </div>
       <p
         style={{
@@ -222,8 +222,7 @@ function Hero({ T }: { T: Theme }) {
           color: T.chrome.fg,
         }}
       >
-        [One-line tagline — what you make and for whom.] I build products end-to-end and care about the boring
-        foundations that make ambitious work possible.
+        Working at the intersection of world models, reinforcement learning, and empirical AI safety. M.Tech dissertation on quantum-inspired RL world models (200 experiments, Bonferroni-corrected). Currently shipping production AI at SKY AI — Klares, International Citizen (Fila portfolio agent), and KAT GCS.
       </p>
     </div>
   );
@@ -433,10 +432,12 @@ function WritingList({ T, onOpen }: { T: Theme; onOpen: (path: string) => void }
 // ------------------------------------------------------------------ Contact
 function ContactCard({ T }: { T: Theme }) {
   const rows: { label: string; value: string; href: string | null }[] = [
-    { label: 'email', value: 'hello@saurabhjalendra.com', href: 'mailto:hello@saurabhjalendra.com' },
-    { label: 'github', value: '@saurabhjalendra', href: 'https://github.com/saurabhjalendra' },
-    { label: 'linkedin', value: 'in/saurabhjalendra', href: 'https://linkedin.com/in/saurabhjalendra' },
+    { label: 'email', value: 'saurabhjalendra@gmail.com', href: 'mailto:saurabhjalendra@gmail.com' },
+    { label: 'github', value: '@SaurabhJalendra', href: 'https://github.com/SaurabhJalendra' },
+    { label: 'linkedin', value: 'in/saurabh-jalendra', href: 'https://linkedin.com/in/saurabh-jalendra' },
+    { label: 'website', value: 'saurabhjalendra.com', href: 'https://saurabhjalendra.com' },
     { label: 'response', value: 'median 24h · worst 72h', href: null },
+    { label: 'available', value: 'Q3 2026', href: null },
   ];
   return (
     <div
