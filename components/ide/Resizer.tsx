@@ -117,7 +117,7 @@ export const LAYOUT_DIMS = {
   sidebar: { default: 240, min: 180, max: 400 },
   assistant: { default: 440, min: 320, max: 540 },
   minimap: { default: 76, min: 60, max: 120 },
-  terminal: { default: 230, min: 150, max: 600 },
+  terminal: { default: 160, min: 120, max: 600 },
 } as const;
 
 /**
