@@ -3,31 +3,16 @@
 // Assistant panel — Copilot Chat–style. Lives in its own column on the right
 // of the editor pane. Streams answers with citations to the repo's "files".
 //
-// The mock backend is the function `mockReply` near the bottom — it's
-// keyword-routed canned answers so the panel feels alive in this design
-// prototype. Replace `chat()` with a real fetch to your /api/chat route
-// when wiring this up; the rest of the component doesn't change.
+// Backend: the real /api/chat route (OpenRouter → claude-haiku-4-5,
+// grounded in content/assistant-wiki/*). All wire/SSE/citation logic lives
+// in lib/assistant-client.ts; this component only renders.
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeCtx } from '@/lib/theme';
 import { PORTFOLIO_FS } from '@/lib/data';
 import { highlight } from '@/lib/syntax';
 import type { Theme } from '@/types/ide';
-
-declare global {
-  interface Window {
-    __mobileMockReply?: (q: string) => MockReply;
-  }
-}
-
-interface MockReply {
-  text: string;
-  citations?: string[];
-  followups?: string[];
-  stack?: string[];
-  table?: { headers: string[]; rows: string[][] };
-  actions?: { label: string; do: string; icon?: string; kind?: 'secondary' }[];
-}
+import { chat, corpusFileToTreePath } from '@/lib/assistant-client';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -38,6 +23,7 @@ interface ChatMessage {
   table?: { headers: string[]; rows: string[][] };
   actions?: { label: string; do: string; icon?: string; kind?: 'secondary' }[];
   streaming?: boolean;
+  error?: boolean;
 }
 
 // ── Public component ────────────────────────────────────────────────
@@ -67,10 +53,16 @@ export default function AssistantPanel({ openFile, onClose, visible, avatar = '>
     if (visible) inputRef.current?.focus();
   }, [visible]);
 
-  async function send(text?: string) {
+  function send(text?: string) {
     const q = (text ?? input).trim();
     if (!q || streaming) return;
     setInput('');
+
+    // History sent to the API = prior turns only (role + content).
+    const history = messages
+      .filter((m) => m.role === 'user' || (m.role === 'assistant' && !m.error))
+      .map((m) => ({ role: m.role, content: m.content }));
+
     setMessages((m) => [...m, { role: 'user', content: q }]);
     setStreaming(true);
 
@@ -78,7 +70,8 @@ export default function AssistantPanel({ openFile, onClose, visible, avatar = '>
     // stream emits chunks.
     setMessages((m) => [...m, { role: 'assistant', content: '', citations: [], streaming: true }]);
 
-    const cancel = await chat(q, messages, {
+    let errored = false;
+    const cancel = chat(q, history, {
       onChunk: (chunk) => {
         setMessages((m) => {
           const copy = m.slice();
@@ -87,19 +80,28 @@ export default function AssistantPanel({ openFile, onClose, visible, avatar = '>
           return copy;
         });
       },
+      onError: (message) => {
+        errored = true;
+        setMessages((m) => {
+          const copy = m.slice();
+          const i = copy.length - 1;
+          copy[i] = { ...copy[i], content: message, error: true, streaming: false };
+          return copy;
+        });
+      },
       onDone: (extras) => {
         setMessages((m) => {
           const copy = m.slice();
           const i = copy.length - 1;
-          copy[i] = {
-            ...copy[i],
-            citations: extras.citations || [],
-            followups: extras.followups || [],
-            stack: extras.stack || undefined,
-            table: extras.table || undefined,
-            actions: extras.actions || undefined,
-            streaming: false,
-          };
+          if (!errored) {
+            copy[i] = {
+              ...copy[i],
+              citations: extras.citations || [],
+              streaming: false,
+            };
+          } else {
+            copy[i] = { ...copy[i], streaming: false };
+          }
           return copy;
         });
         setStreaming(false);
@@ -605,7 +607,7 @@ function InputBar({
         }}
       >
         <span>↵ send · ⇧↵ newline</span>
-        <span>mock · replace with /api/chat</span>
+        <span>claude-haiku · grounded</span>
       </div>
     </div>
   );
@@ -758,7 +760,77 @@ function renderChatInline(
       i += m[0].length;
       continue;
     }
-    // Inline citation marker [N] — only if N maps to a real source.
+    // Inline corpus citation marker [^filename] — emitted by the LLM.
+    // If the corpus file maps to a real IDE tree file, render a clickable
+    // chip that flies that tab open; otherwise render a non-clickable
+    // styled reference (the corpus file isn't in the tree).
+    if ((m = rest.match(/^\[\^([^\]]+?)\]/))) {
+      const corpusFile = m[1].trim();
+      const treePath = corpusFileToTreePath(corpusFile);
+      const label = corpusFile.replace(/\.md$/, '').replace(/^\d+-/, '');
+      if (treePath) {
+        out.push(
+          <button
+            key={key++}
+            onClick={(e) => {
+              if (window.IDE_FLY_TO_TAB) window.IDE_FLY_TO_TAB(e.currentTarget, treePath, openFile);
+              else openFile?.(treePath);
+            }}
+            title={'Open ' + treePath}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 3,
+              height: 16,
+              padding: '0 6px',
+              border: 0,
+              borderRadius: 8,
+              marginLeft: 2,
+              background: T.accent,
+              color: T.chrome.statusBarFg,
+              fontFamily: '"Geist Mono",monospace',
+              fontSize: 9.5,
+              fontWeight: 700,
+              cursor: 'pointer',
+              verticalAlign: '1px',
+              letterSpacing: '0.02em',
+            }}
+          >
+            <span style={{ fontSize: 8 }}>↗</span>
+            {label}
+          </button>
+        );
+      } else {
+        out.push(
+          <span
+            key={key++}
+            title={corpusFile}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              height: 16,
+              padding: '0 6px',
+              borderRadius: 8,
+              marginLeft: 2,
+              background: T.chrome.hoverBg,
+              color: T.chrome.fgFainter,
+              border: '1px solid ' + T.chrome.border,
+              fontFamily: '"Geist Mono",monospace',
+              fontSize: 9.5,
+              fontWeight: 600,
+              verticalAlign: '1px',
+              letterSpacing: '0.02em',
+            }}
+          >
+            {label}
+          </span>
+        );
+      }
+      i += m[0].length;
+      continue;
+    }
+    // Legacy numeric citation marker [N] — kept for any [1]/[2] text that
+    // resolves against the citations array.
     if ((m = rest.match(/^\[(\d+)\]/))) {
       const n = parseInt(m[1], 10);
       const file = citations[n - 1];
@@ -1096,7 +1168,7 @@ export function ActionButtons({
   );
 }
 
-// ── Intro + canned routing ──────────────────────────────────────────
+// ── Intro message ───────────────────────────────────────────────────
 const INTRO_MESSAGE: ChatMessage = {
   role: 'assistant',
   streaming: false,
@@ -1105,204 +1177,3 @@ const INTRO_MESSAGE: ChatMessage = {
 
 I cite the files I pulled from. Click a source chip to open it in the editor.`,
 };
-
-// ── Backend boundary ────────────────────────────────────────────────
-//
-// Replace this `chat` function with a fetch to your /api/chat route. The
-// rest of the component already expects an async streaming interface:
-//
-//   chat(prompt, history, { onChunk(text), onDone(citations) })
-//     → returns a cancel function the caller may call to abort
-
-async function chat(
-  question: string,
-  _history: ChatMessage[],
-  { onChunk, onDone }: { onChunk: (chunk: string) => void; onDone: (extras: MockReply) => void }
-): Promise<() => void> {
-  const reply = mockReply(question);
-  const { text } = reply;
-
-  let i = 0;
-  const burst = () => 1 + Math.floor(Math.random() * 3);
-  let cancelled = false;
-
-  function step() {
-    if (cancelled) return;
-    const next = Math.min(text.length, i + burst());
-    onChunk(text.slice(i, next));
-    i = next;
-    if (i < text.length) setTimeout(step, 14 + Math.random() * 18);
-    else onDone(reply);
-  }
-  setTimeout(step, 240);
-
-  return () => {
-    cancelled = true;
-    onDone(reply);
-  };
-}
-
-export function mockReply(question: string): MockReply {
-  const q = question.toLowerCase();
-
-  const has = (...words: string[]) => words.some((w) => q.includes(w));
-
-  if (has('stack', 'tech', 'language', 'tools', 'framework'))
-    return {
-      text: `TypeScript, Rust, Postgres, React — the love list.[1]
-Fluent in Go, Python, GCP, Redis, and WebGL.[1]
-Currently learning Swift and OCaml.[2]`,
-      citations: ['experience.json', 'about.md'],
-      followups: ["What's his strongest project?", 'How does he pick tech?'],
-      stack: ['TypeScript', 'Rust', 'Postgres', 'React', 'Go', 'Python', 'GCP', 'Redis', 'WebGL', 'Swift', 'OCaml'],
-    };
-
-  if (has('compare', 'alpha vs', 'alpha and bravo', 'alpha bravo', 'difference between'))
-    return {
-      text: `Alpha and Bravo are very different beasts.[1][2]
-Alpha is a product feature — realtime sync visible to end users.
-Bravo is infra — the CI rewrite that nobody sees but everybody feels.`,
-      citations: ['projects/alpha.md', 'projects/bravo.md'],
-      followups: ['Tell me more about Alpha', 'What about Bravo?', 'Show all projects'],
-      table: {
-        headers: ['', 'Alpha', 'Bravo'],
-        rows: [
-          ['kind', 'product feature', 'infrastructure'],
-          ['stack', 'TypeScript / tRPC', 'Go / Bazel'],
-          ['role', 'lead engineer', 'infra'],
-          ['year', '2026', '2025'],
-          ['outcome', 'edits-lost 14%→0.2%', 'CI 14m→90s'],
-        ],
-      },
-    };
-
-  if (has('available', 'hire', 'hiring', 'contract', 'freelance', 'open to'))
-    return {
-      text: `Available from **Q3 2026** — open to contract, full-time, or advisory.[1]
-Not doing: crypto, anything with an NDA on the NDA.[1]
-Best path is email: \`hello@saurabhjalendra.com\` (median reply 24h).[1]`,
-      citations: ['contact.yaml'],
-      followups: ['What kind of work fits best?', "What's his rate?"],
-      actions: [
-        { label: 'Email Saurabh', do: 'mailto:hello@saurabhjalendra.com', icon: '↗' },
-        { label: 'Book a call', do: 'https://cal.com/saurabhjalendra', kind: 'secondary', icon: '✎' },
-      ],
-    };
-
-  if (has('best', 'strongest', 'top', 'favorite', 'favourite', 'proudest'))
-    return {
-      text: `**Alpha** — the realtime collaboration layer that survives flaky networks.[1]
-Edits-lost-per-session went 14% → 0.2% in 11 weeks.[1]
-Cited in a customer RFP as the reason they signed.[1]`,
-      citations: ['projects/alpha.md'],
-      followups: ['What was the technical bet?', 'Show me other projects'],
-    };
-
-  if (has('ci', 'bazel', 'pipeline', 'build', 'bravo'))
-    return {
-      text: `**Bravo**: a 14-minute CI rebuilt to 90 seconds.[1]
-Mostly remote-cached Bazel for the hot 6% of targets plus a diff-aware test runner.[1]`,
-      citations: ['projects/bravo.md'],
-      followups: ['Did the migration cause issues?', "What's next on his infra list?"],
-    };
-
-  if (has('design system', 'design-system', 'delta', 'tokens'))
-    return {
-      text: `**Delta**: a design system adopted across 7 product teams in 4 months.[1]
-Token pipeline: Figma → JSON → CSS vars → typed React props.[1]
-Onboarding a new product surface dropped from weeks to an afternoon.[1]`,
-      citations: ['projects/delta.md'],
-      followups: ['Did teams resist adoption?', 'How did he measure success?'],
-    };
-
-  if (has('graph', 'webgl', 'charlie', 'visualiz', 'open source', 'oss'))
-    return {
-      text: `**Charlie**: a WebGL playground for graph databases.[1]
-Rust/WASM force-directed layout handles 50k nodes at 60fps.[1]
-Open source, ~2.1k stars.[1]`,
-      citations: ['projects/charlie.md'],
-      followups: ['How does the layout algorithm work?', 'Show me more OSS work'],
-    };
-
-  if (has('cli', 'rust', 'echo', 'migration'))
-    return {
-      text: `**Echo**: a Rust CLI for legacy data migrations.[1]
-Dry-run + rollback are the killer features — they made it the team's default tool.[1]`,
-      citations: ['projects/echo.md'],
-      followups: ['What languages does he use most?', 'Walk me through a project'],
-    };
-
-  if (has('ios', 'swift', 'foxtrot', 'app store', 'mobile'))
-    return {
-      text: `**Foxtrot**: a small iOS tool, in beta.[1]
-Email if you want a TestFlight invite.[1]`,
-      citations: ['projects/foxtrot.md'],
-      followups: ['How do I get the TestFlight invite?', 'What does it actually do?'],
-    };
-
-  if (has('now', 'this week', 'working on', 'current', 'today'))
-    return {
-      text: `This week: closing the last 11 TestFlight bugs on Foxtrot.[1]
-Shipping a small library next week.[1]
-See \`/now\` for the full version, refreshed weekly.[1]`,
-      citations: ['now.md'],
-      followups: ["What's Foxtrot?", "What's he reading?"],
-    };
-
-  if (has('about', 'who', 'background', 'bio', 'experience', 'history'))
-    return {
-      text: `Engineer / product builder, **6+ years** shipping.[2]
-Cares about boring foundations that make ambitious work possible — observability, design systems, internal tools.[1]
-Comfortable owning a feature end to end: design, frontend, backend, infra.[1]`,
-      citations: ['about.md', 'experience.json'],
-      followups: ['What companies has he worked at?', "What's his strongest project?"],
-    };
-
-  if (has('contact', 'email', 'reach', 'message', 'phone', 'linkedin', 'github'))
-    return {
-      text: `Email is the surest path: \`hello@saurabhjalendra.com\`[1]
-GitHub: @saurabhjalendra · LinkedIn: in/saurabhjalendra[1]
-Median response 24h, worst-case 72h.[1]`,
-      citations: ['contact.yaml'],
-      followups: ['Is he available right now?', 'Where is he based?'],
-      actions: [
-        { label: 'Email', do: 'mailto:hello@saurabhjalendra.com', icon: '@' },
-        { label: 'GitHub', do: 'https://github.com/saurabhjalendra', kind: 'secondary', icon: 'G' },
-        { label: 'LinkedIn', do: 'https://linkedin.com/in/saurabhjalendra', kind: 'secondary', icon: 'in' },
-      ],
-    };
-
-  if (has('writing', 'blog', 'essay', 'talk', 'speak', 'wrote', 'article'))
-    return {
-      text: `Three pieces are up: a recent essay on the boring middle of projects[1], a shorter note[1], and a conference talk from late 2025[2].
-Each is in \`/writing\`.`,
-      citations: ['writing/2026-04-12-essay-one.md', 'writing/2025-11-22-talk.md'],
-      followups: ["What's the essay about?", 'Where is he speaking next?'],
-    };
-
-  if (has('readme', 'site', 'this site', 'portfolio'))
-    return {
-      text: `The whole site is laid out as a codebase.[1]
-\`README.md\` is the landing page; \`about.md\`, \`projects/*\`, \`writing/*\` are the rest.
-Try ⌘P to quick-open any file, or ⌘K for commands.`,
-      citations: ['README.md'],
-      followups: ['Who built this site?', "What's the keyboard shortcut for the terminal?"],
-    };
-
-  if (has('hello', 'hi', 'hey', 'sup'))
-    return {
-      text: `Hi! Try one of the suggested questions, or ask about a specific project (alpha / bravo / charlie / delta / echo / foxtrot).`,
-      citations: [],
-      followups: ["What's Saurabh's stack?", 'Show me his strongest project', 'Is he available?'],
-    };
-
-  // Fallback — honest about being a mock
-  return {
-    text: `This is a mock backend — keyword routing rather than a real LLM.
-In production, this calls \`/api/chat\` which routes through OpenRouter with the repo files as grounding.
-
-Try one of the suggestions, or ask about: stack, availability, projects (alpha / bravo / charlie / delta / echo / foxtrot), now, writing, contact.`,
-    citations: [],
-    followups: ["What's his stack?", 'Show me his strongest project', 'Is he available?'],
-  };
-}

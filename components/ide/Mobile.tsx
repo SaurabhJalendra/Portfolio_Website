@@ -18,8 +18,8 @@ import {
   StackPills,
   ComparisonTable,
   ActionButtons,
-  mockReply,
 } from './Assistant';
+import { chat } from '@/lib/assistant-client';
 
 // Hook: returns whether viewport width is below `bp` (default 900).
 export function useIsMobile(bp = 900): boolean {
@@ -43,6 +43,7 @@ interface ChatMessage {
   table?: { headers: string[]; rows: string[][] };
   actions?: { label: string; do: string; icon?: string; kind?: 'secondary' }[];
   streaming?: boolean;
+  error?: boolean;
 }
 
 // ------------------------------------------------------------------ App
@@ -633,7 +634,8 @@ function RenderedMarkdown({ body, onLink }: { body: string; onLink: (p: string) 
 }
 
 // ------------------------------------------------------------------ Ask sheet
-// Mobile-friendly chat. Uses the same mock backend as the desktop assistant.
+// Mobile-friendly chat. Uses the same /api/chat backend (via the shared
+// lib/assistant-client chat helper) as the desktop assistant.
 function AskSheet({
   T,
   onClose,
@@ -659,49 +661,54 @@ function AskSheet({
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [messages]);
 
-  async function send(text?: string) {
+  function send(text?: string) {
     const q = (text ?? input).trim();
     if (!q || streaming) return;
     setInput('');
+
+    // History sent to the API = prior turns only (role + content).
+    const history = messages
+      .filter((m) => m.role === 'user' || (m.role === 'assistant' && !m.error))
+      .map((m) => ({ role: m.role, content: m.content }));
+
     setMessages((m) => [...m, { role: 'user', content: q }]);
     setStreaming(true);
-    const reply = mockReply(q);
     setMessages((m) => [
       ...m,
-      {
-        role: 'assistant',
-        content: '',
-        citations: reply.citations,
-        followups: reply.followups,
-        stack: reply.stack,
-        table: reply.table,
-        actions: reply.actions,
-        streaming: true,
-      },
+      { role: 'assistant', content: '', citations: [], streaming: true },
     ]);
-    // Simple streaming
-    const text2 = reply.text;
-    let idx = 0;
-    const tick = () => {
-      idx = Math.min(text2.length, idx + 2 + Math.floor(Math.random() * 3));
-      setMessages((m) => {
-        const c = m.slice();
-        const i = c.length - 1;
-        c[i] = { ...c[i], content: text2.slice(0, idx) };
-        return c;
-      });
-      if (idx < text2.length) setTimeout(tick, 16 + Math.random() * 18);
-      else {
+
+    let errored = false;
+    chat(q, history, {
+      onChunk: (chunk) => {
         setMessages((m) => {
           const c = m.slice();
           const i = c.length - 1;
-          c[i] = { ...c[i], streaming: false };
+          c[i] = { ...c[i], content: c[i].content + chunk };
+          return c;
+        });
+      },
+      onError: (message) => {
+        errored = true;
+        setMessages((m) => {
+          const c = m.slice();
+          const i = c.length - 1;
+          c[i] = { ...c[i], content: message, error: true, streaming: false };
+          return c;
+        });
+      },
+      onDone: (extras) => {
+        setMessages((m) => {
+          const c = m.slice();
+          const i = c.length - 1;
+          c[i] = errored
+            ? { ...c[i], streaming: false }
+            : { ...c[i], citations: extras.citations || [], streaming: false };
           return c;
         });
         setStreaming(false);
-      }
-    };
-    setTimeout(tick, 220);
+      },
+    });
   }
 
   function onKey(e: React.KeyboardEvent<HTMLTextAreaElement>) {

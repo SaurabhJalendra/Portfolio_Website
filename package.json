@@ -4,8 +4,8 @@
   "description": "IDE-style portfolio for Saurabh Jalendra (saurabhjalendra.com)",
   "private": true,
   "scripts": {
-    "prebuild": "node scripts/sync-content.mjs",
-    "predev": "node scripts/sync-content.mjs",
+    "prebuild": "node scripts/sync-content.mjs && node scripts/build-corpus.mjs",
+    "predev": "node scripts/sync-content.mjs && node scripts/build-corpus.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
