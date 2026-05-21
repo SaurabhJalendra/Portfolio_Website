@@ -90,6 +90,13 @@ export const CAREER_COMMITS: CareerCommit[] = [
     link: 'projects/prism-skindb.md',
   },
   {
+    date: '2025-07-02',
+    hash: 'k1g3c5s7',
+    type: 'feat',
+    message: 'shipped public KAT GCS architecture summary (Drone-Ground-Control README)',
+    link: 'experience.json',
+  },
+  {
     date: '2025-03-26',
     hash: 'c81fb59',
     type: 'feat',
@@ -712,6 +719,7 @@ systematic; the AI pivot crystallized in late 2024 with Klares.
 - **World models in JAX/Equinox** — Simulating Anything implements 192 simulation domains, RSSM world models, and symbolic regression (PySR/SINDy) recovering known physical laws with R² ≥ 0.999 on 11/14 core domains
 - **AI safety pattern thinking** — Risk-Manager-as-veto in the Trading Agent (analogous to scalable-oversight protocols), the HAZE Benchmark for measuring LLM clarification behavior with negative controls
 - **Operations + business judgment** — 6 years running a family marketing-services business (Jan 2018 – Mar 2024) before the AI pivot. I understand how revenue actually happens, not just how to write code.
+- **Credential-tracked study** — 9 LinkedIn-listed certifications (Mar–May 2026): all 4 DeepLearning.AI math foundations (Linear Algebra, Calculus, Mathematics for ML, Probability & Statistics for ML), the Anthropic Claude series (Claude 101, Claude Code 101, Claude Code in Action, AI Fluency)
 
 ## what I'm working on getting better at
 
@@ -759,7 +767,7 @@ give you anything that a well-tuned classical baseline doesn't?
     'projects/simulating-anything.md': `# Simulating Anything — domain-agnostic scientific discovery via world models
 
 **Role:** Built
-**Stack:** Python 3.12, JAX/Equinox, PyTorch (RSSM), PySR (Julia backend), pySINDy, NumPy/SciPy, Sphinx, LaTeX
+**Stack:** Python 3.12, JAX/Equinox/Optax/diffrax, PySR (Julia backend), pySINDy, NumPy/SciPy, Sphinx, LaTeX
 **Year:** 2026  ·  **Status:** active research; paper draft in progress, **not yet published**
 
 ## the problem
@@ -785,11 +793,22 @@ system.
 - **570 cross-domain mathematical isomorphisms** detected across 192 domains — e.g., harmonic-oscillator dynamics recurring across pendulum, RLC circuit, and molecular vibration
 - 316 campaigns, 1,267 discoveries, 118 validated, 43 2D phase diagrams (continuous-loop campaign engine)
 
+## V4 capabilities (active push 2026-05-01)
+- **Composable dynamics modules** — snap-together building blocks (harmonic forces, nonlinear damping, gravity, growth, SIR) — build simulations without writing code
+- **Equation-to-simulation parser** — strings like \`dx/dt = v, dv/dt = -k*x\` → running simulations with RK4 integration
+- **DreamerV4 RSSMv2** world model — mixed stochastic (categorical + Gaussian), LayerNorm, continue predictor; EnsembleRSSM for epistemic uncertainty
+- **External simulator bridges** — OpenFOAM, GROMACS, SUMO connectable via file/socket/subprocess/Python
+- **Sim-to-real transfer validation** — 12 metrics (R², RMSE, MAPE, KS test, correlation) with composite confidence scores
+- **Persistent knowledge base** — JSON-backed store for equations, analogies, parameters, hypotheses across sessions
+- **New-discovery mode** — registry of 6 unsolved problems (three-body, Ising critical exponents) with automated parameter sweeps
+- **Advanced encoders** — GNN, 3D CNN, DeepSets for graph / volumetric / particle data
+- **ADR-0001 pivot to AMI-style cognitive architecture** per Yann LeCun framing — the discovery engine becomes Phase 1 of a 4-phase, 12-month plan
+
 [→ GitHub: SaurabhJalendra/Simulating-Anything](https://github.com/SaurabhJalendra/Simulating-Anything)`,
 
     'projects/ai-trading-agent.md': `# AI Trading Agent — 8-agent LLM orchestration with Risk-Manager veto
 
-**Role:** Led development of (collaboration with one other engineer; CV uses "Led development of" per honesty rules)
+**Role:** Led development of (with Vishvesh Mathur, SKY AI intern) — designed the 8-agent architecture (7-step reasoning chain, Bull/Bear debate, Reflection, 8th-agent CompanyContext, Risk-Manager-as-veto); Vishvesh extended to live trading via Angel One SmartAPI + the frontend UI
 **Stack:** FastAPI 0.104, React 18 + TypeScript + Vite, PostgreSQL 15, Docker Compose, Nginx + Let's Encrypt, AWS EC2, Anthropic SDK (Claude text + vision), APScheduler
 **Year:** 2025–present  ·  **Status:** shipped, deployed at trading-agent.sky-ai.in (private repo)
 
@@ -854,8 +873,9 @@ tests all three jointly across multiple domains in agentic mode.
 
     'projects/klares-fila.md': `# Klares + Fila — document intelligence + multilingual portfolio agent
 
-**Role:** Built Klares (sole engineer); Led development of International Citizen (team project)
-**Stack:** Express 4 + TypeScript, React 18 + Vite + TanStack + Radix + Recharts, Drizzle ORM, Neon PostgreSQL, pgvector, AWS S3, FastAPI Python extraction microservice, Nodemailer, i18next, jspdf, Docker Compose, AWS EC2
+**Role:** Built Klares (with SKY AI team — Kalpit, Vishvesh, Himanshu as known contributors); Led development of International Citizen (independent project on the sky-ai.in subdomain, NOT a SKY AI product line — 3-engineer team: Saurabh + Kalpit + Himanshu)
+**Klares stack:** Express 4 monorepo (TypeScript, ESM) hosting React 18 + Vite 5 SPA + 5 Python daemons under PM2 (DDQ autofill, Knowledge Base, SBERT categorizer, OCR/chunking document processor, Microsoft Graph Outlook CRM). Drizzle ORM over PostgreSQL (2046-line schema / 63 tables). Dual S3+GCS storage with migration tooling. AWS SES + Postmark email. Passport-local + bcrypt auth. EC2 + GitHub Actions CI/CD. Repo mirrored to client-controlled \`Startkitsune/Klares_new_MVP\`.
+**International-Citizen stack:** Express 4 + TypeScript (7800-line \`server/routes.ts\`), React 18 + Vite 6, Drizzle ORM over Neon serverless PostgreSQL. Python microservices for extraction + translation (docling + easyocr + pytesseract + llama-index + langchain + litellm + ragas + dspy). AWS S3, OpenAI SDK v5, i18next (En/Hi/Zh). Docker + nginx + AWS EC2.
 **Year:** 2024–present  ·  **Status:** shipped — Klares to Hong Kong family-office and asset-management clients; International Citizen deployed at international-citizen.sky-ai.in
 
 ## the problem
@@ -892,7 +912,7 @@ portfolio agent that grounds advice on live user data is the unblock.
 ## outcome
 
 - Klares: production deployments to Hong Kong family-office and asset-management clients; retrieval faithfulness eval pipeline 78% → 94%
-- International Citizen: ~500+ document types covered, 24+ currencies with FX, 3 languages with hard-enforced multilingual response, schema v5.7 validated against 20 real statements across 10+ institutions / 3 countries / 9 account types
+- International Citizen (pre-revenue early-tester phase; independent project, NOT a SKY AI product line per its current IDEA.md): ~500+ document types covered, 24+ currencies with FX, 3 languages with hard-enforced multilingual response, schema v5.7 validated against 20 real statements across 10+ institutions / 3 countries / 9 account types
 - 3-tier extraction prompt (Extract / Calculate / Inference-forbidden) — anti-hallucination guardrail that became the SKY AI house standard for structured extraction`,
 
     'projects/prism-skindb.md': `# Prism (skinDB-ai) — chunked-parallel LLM orchestration with JSON repair
@@ -954,7 +974,8 @@ Anthropic SDK.
 ## outcome
 
 - Working full-stack app: authenticated multi-session UI with persistent PostgreSQL sessions, real Claude integration via the CLI subprocess pattern
-- Honest scope: plan-approval is currently a schema-level field, not a fully wired gating mechanism in the UX; counts as scaffolding, not a finished safety control
+- Honest scope: NOT production-ready. The repo's own CLAUDE.md documents 6 remaining known issues — path-traversal on \`GET /api/files/{path:path}\`, hardcoded CLI path on a Windows username, git credentials surfacing in URL logs, CORS=\`*\`, half-implemented plan-approval (schema-level only, not UX-wired), \`nul\` and dead docker-entrypoint files
+- A 2026-04-30 deep audit produced 7 Critical findings — all fixed by 2026-05-10 — plus a 5-important-fixes wave; the items above are what remains
 - 17 KB README documenting the architecture choice and tradeoffs
 
 [→ GitHub: SaurabhJalendra/quant-agent](https://github.com/SaurabhJalendra/quant-agent)`,
@@ -1023,18 +1044,19 @@ Reimplement the DeepGraviLens architecture (Pinciroli Vago & Fraternali, *Neural
 
 ## the problem
 
-Single-modality medical image classifiers leave information on the table — CT shows bone and dense tissue clearly while MRI captures soft-tissue detail. The interesting engineering question is how to fuse the two representations at the feature level (rather than naive concatenation) on a 6 GB laptop GPU budget.
+Single-modality medical image classifiers leave information on the table — CT shows bone and dense tissue clearly while MRI captures soft-tissue detail. The interesting engineering question is how to align the two modalities into a *shared feature representation* (rather than naive concatenation) on a 6 GB laptop GPU budget.
 
 ## what I did
 
 - Dual-branch ResNet50 with **cross-modal attention gates** for feature-level fusion (not late concatenation) — the attention gates learn modality-specific feature weights
 - Trained on **4,974 images** (1,742 CT-train + 1,744 MRI-train + 744 CT-test + 744 MRI-test) with mixed-precision (FP16 + TF32 enabled on cuDNN) on an NVIDIA RTX 4050 Laptop GPU (6 GB VRAM, CUDA 12.9)
-- Pipeline: data exploration → cross-modal feature extraction & fusion → evaluation vs single-modality baselines
+- Pipeline: data exploration → cross-modal feature extraction → representation-learning evaluation vs. single-modality baselines
 
 ## outcome
 
-- Working dual-branch fusion model with feature-level attention; demonstrates resource-aware engineering within a laptop-GPU budget
-- Multimodal fusion at the feature level rather than naive late-concatenation — the harder, more interesting version
+- This is **representation learning, not classification.** The fusion model achieved cross-modal similarity 0.7213 ± 0.0233 (within the clinically meaningful range 0.6–0.8) and feature variance 0.302 — a 70.8% reduction vs. CT-only — across 5-epoch stable convergence
+- The harder, more interesting version: feature-level fusion with cross-modal attention rather than naive late-concatenation
+- No downstream classification accuracy is reported — the metric is feature alignment, not class prediction
 
 [→ GitHub: SaurabhJalendra/Fusion-model-for-CT-and-MRI-data](https://github.com/SaurabhJalendra/Fusion-model-for-CT-and-MRI-data)`,
 
@@ -1561,7 +1583,7 @@ The last programming language won't have syntax. It'll have understanding.`,
     "from": "2025-02",
     "company": "SKY Advanced Research LLP",
     "title": "Co-Founder & AI Lead",
-    "scope": "Building since Oct 2024 (pre-incorporation); company formally registered Feb 2025. Built Klares (vertical AI for Hong Kong finance — CRM + Outlook + DDQ autofill + compliance, LlamaIndex RAG + pgvector + cross-encoder re-rank); led International Citizen (cross-border wealth platform with Fila multilingual portfolio agent); shipped KAT GCS (drone Ground Control Station for autonomous flight, C++ implementation). 10+ internal AI tools."
+    "scope": "Building since Oct 2024 (pre-incorporation); company formally registered Feb 2025. Built Klares (vertical AI for Hong Kong family-office and asset-management clients — DDQ autofill via LlamaIndex RAG, pgvector + cross-encoder re-rank, SBERT categorization, retrieval-faithfulness eval pipeline 78% → 94%, full Express + 5-Python-daemon production stack on EC2 mirrored to client org). Co-architected the KAT GCS — drone Ground Control Station with FastAPI + MAVSDK + WebSocket backend, React + Leaflet operator UI, PX4 SITL simulation profile, Docker-deployed (public architecture summary at github.com/SaurabhJalendra/Drone-Ground-Control). Led development of International Citizen (independent project on sky-ai.in subdomain; 3-engineer team) with the Fila multilingual portfolio agent. 10+ internal AI tools."
   },
 
   "history": [
@@ -1642,6 +1664,8 @@ takes up. (See [nownownow.com](https://nownownow.com) for the convention.)
 - **Phase 2 portfolio rewrite** — porting the IDE-shell design into Next.js 16 + App Router; this page lives inside that
 - **HAZE Benchmark v0.2** — closing the length-confound + BoW-shortcut on the dataset (Cohen's d=1.6 → target <0.3); 400 synthetic-validated + 390 real-sourced instances next
 - **Anthropic Fellows application prep** — RL workstream primary, AI Safety secondary
+- **Simulating Anything V4** — DreamerV4 RSSMv2, equation-to-sim parser, OpenFOAM/GROMACS/SUMO bridges, sim-to-real validation; ADR-0001 pivot to AMI-style cognitive architecture (Phase 1: discovery engine; Phases 2–4 stubbed)
+- **Klares 2026-Q2 release** — Docling adoption (replacing LlamaParse SaaS), ground-truth + synthetic-data evaluation harness, multi-document production dashboard, \`qa_matcher.py\` for filling new DDQs from prior corpus
 
 ## recently certified
 - Completed 7 certifications in March–May 2026 — DeepLearning.AI math foundations (Linear Algebra, Calculus, Mathematics for ML, Probability & Statistics for ML) + Anthropic AI Fluency & Claude Code series (Claude 101, Claude Code 101, Claude Code in Action)
