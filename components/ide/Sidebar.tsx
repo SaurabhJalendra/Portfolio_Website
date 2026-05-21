@@ -17,6 +17,7 @@ import {
   type GitRemote,
 } from '@/lib/data';
 import { extractOutline } from '@/lib/syntax';
+import { useFocusTrap } from '@/lib/focus-trap';
 import type { Theme, Tweaks, SetTweak, FSNode } from '@/types/ide';
 
 declare global {
@@ -75,6 +76,9 @@ function ActivityBar({ active, setActive, onSettings, settingsBtnRef, settingsAc
   ];
   return (
     <div
+      role="tablist"
+      aria-label="Sidebar panels"
+      aria-orientation="vertical"
       style={{
         gridArea: 'activity',
         background: T.chrome.activityBar,
@@ -90,6 +94,9 @@ function ActivityBar({ active, setActive, onSettings, settingsBtnRef, settingsAc
         <button
           key={k}
           title={title}
+          aria-label={title}
+          role="tab"
+          aria-selected={active === k}
           onClick={() => setActive(k)}
           style={{
             position: 'relative',
@@ -207,10 +214,23 @@ function TreeRow({ node, depth, openFile, activePath, expanded, toggleExpand }: 
     return T.chrome.fgDim;
   };
 
+  const activate = () => (node.type === 'dir' ? toggleExpand(node.path) : openFile(node.path));
+
   return (
     <>
       <div
-        onClick={() => (node.type === 'dir' ? toggleExpand(node.path) : openFile(node.path))}
+        onClick={activate}
+        role={node.type === 'dir' ? 'treeitem' : 'button'}
+        tabIndex={0}
+        aria-expanded={node.type === 'dir' ? !!isOpen : undefined}
+        aria-selected={node.type === 'dir' ? false : undefined}
+        aria-current={sel ? 'true' : undefined}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+          }
+        }}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -292,6 +312,16 @@ function ExplorerPanel({ openFile, activePath }: { openFile: (p: string) => void
       <SidebarHeader>Portfolio</SidebarHeader>
       <div
         onClick={() => toggleExpand(PORTFOLIO_FS.root)}
+        role="treeitem"
+        tabIndex={0}
+        aria-expanded
+        aria-selected={false}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleExpand(PORTFOLIO_FS.root);
+          }
+        }}
         style={{
           display: 'flex',
           gap: 6,
@@ -350,6 +380,14 @@ function OutlinePanel({ activePath }: { activePath: string | null }) {
           <div
             key={i}
             onClick={() => window.IDE_JUMP_TO?.(h.line)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.IDE_JUMP_TO?.(h.line);
+              }
+            }}
             style={{
               display: 'flex',
               gap: 8,
@@ -863,6 +901,10 @@ interface SettingsPopoverProps {
 function SettingsPopover({ anchorRef, onClose, tweaks, setTweak }: SettingsPopoverProps) {
   const T = useContext(ThemeCtx);
   const [pos, setPos] = useState({ left: 50, bottom: 36 });
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  // Trap focus within the popover; on close, focus returns to the gear button
+  // (it was the focused element when the popover opened).
+  useFocusTrap(popoverRef, true);
 
   // Anchor to the gear button: pop opens to its right, aligned to the
   // button's bottom edge so the menu rises upward.
@@ -885,6 +927,10 @@ function SettingsPopover({ anchorRef, onClose, tweaks, setTweak }: SettingsPopov
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 2000 }} />
       <div
+        ref={popoverRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Settings"
         style={{
           position: 'fixed',
           left: pos.left,
@@ -924,35 +970,6 @@ function SettingsPopover({ anchorRef, onClose, tweaks, setTweak }: SettingsPopov
           onChange={(v) => setTweak('chrome', v as Tweaks['chrome'])}
           T={T}
         />
-
-        <div style={{ height: 1, background: T.chrome.border, margin: '8px 4px' }} />
-
-        <button
-          onClick={() => {
-            onClose();
-            window.parent?.postMessage({ type: '__activate_edit_mode' }, '*');
-          }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            padding: '8px 10px',
-            border: 0,
-            borderRadius: 6,
-            background: 'transparent',
-            color: T.chrome.fgDim,
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            fontSize: 12.5,
-            textAlign: 'left',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = T.chrome.hoverBg)}
-          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-        >
-          <span>More tweaks…</span>
-          <span style={{ color: T.chrome.fgFainter, fontFamily: '"Geist Mono",monospace', fontSize: 11 }}>↗</span>
-        </button>
       </div>
       <style>{`
         @keyframes sj-pop-in {

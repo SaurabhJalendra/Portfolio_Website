@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, IBM_Plex_Mono, IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -24,9 +24,42 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://saurabhjalendra.com";
+const TITLE = "Saurabh Jalendra — AI Research Engineer";
+const DESCRIPTION =
+  "IDE-style portfolio for Saurabh Jalendra — AI Research Engineer working on world models, reinforcement learning, and empirical AI safety.";
+
 export const metadata: Metadata = {
-  title: "Saurabh Jalendra — Portfolio",
-  description: "IDE-style portfolio for Saurabh Jalendra (saurabhjalendra.com)",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  // openGraph.images / twitter.images are auto-populated by the
+  // app/opengraph-image.tsx metadata route — no need to list them here.
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: "saurabhjalendra.com",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#16161a" },
+    { media: "(prefers-color-scheme: light)", color: "#f0ece2" },
+  ],
 };
 
 export default function RootLayout({

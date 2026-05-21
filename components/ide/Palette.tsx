@@ -8,6 +8,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeCtx } from '@/lib/theme';
 import { PlatformCtx, modKey } from '@/lib/platform';
 import { PORTFOLIO_FS } from '@/lib/data';
+import { useFocusTrap } from '@/lib/focus-trap';
 import type { Theme, FSNode } from '@/types/ide';
 
 export type PaletteKind = 'quickopen' | 'commands' | null;
@@ -129,7 +130,12 @@ function PaletteShell({ q, setQ, items, onPick, footer, placeholder, leadingIcon
         />
         <kbd style={kbdStyle(T)}>esc</kbd>
       </div>
-      <div ref={listRef} style={{ flex: 1, overflow: 'auto', padding: '6px 6px 8px' }}>
+      <div
+        ref={listRef}
+        role="listbox"
+        aria-label="Results"
+        style={{ flex: 1, overflow: 'auto', padding: '6px 6px 8px' }}
+      >
         {items.length === 0 && (
           <div style={{ padding: '14px 18px', color: T.chrome.fgFainter, fontSize: 13 }}>No results.</div>
         )}
@@ -137,6 +143,8 @@ function PaletteShell({ q, setQ, items, onPick, footer, placeholder, leadingIcon
           <div
             key={it.id || i}
             data-row={i}
+            role="option"
+            aria-selected={i === sel}
             onMouseEnter={() => setSel(i)}
             onClick={() => onPick(it)}
             style={{
@@ -340,10 +348,18 @@ function CommandPalette({
       { id: 'view.map', icon: '☰', title: showMinimap ? 'Hide minimap' : 'Show minimap', meta: 'view', action: () => setShowMinimap((v) => !v) },
       { id: 'view.motion', icon: '↻', title: motion ? 'Disable typing animation' : 'Enable typing animation', meta: 'view', action: () => setMotion((v) => !v) },
       // Actions
-      { id: 'do.email', icon: '@', title: 'Email · hello@saurabhjalendra.com', meta: 'contact', action: () => { window.open('mailto:hello@saurabhjalendra.com'); } },
-      { id: 'do.github', icon: 'G', title: 'GitHub · @saurabhjalendra', meta: 'contact', action: () => { window.open('https://github.com/saurabhjalendra', '_blank'); } },
-      { id: 'do.linkedin', icon: 'in', title: 'LinkedIn · in/saurabhjalendra', meta: 'contact', action: () => { window.open('https://linkedin.com/in/saurabhjalendra', '_blank'); } },
-      { id: 'do.dl', icon: '↓', title: 'Download résumé (PDF)', meta: 'contact', action: () => { /* placeholder */ } },
+      { id: 'do.email', icon: '@', title: 'Email · saurabhjalendra@gmail.com', meta: 'contact', action: () => { window.open('mailto:saurabhjalendra@gmail.com'); } },
+      { id: 'do.github', icon: 'G', title: 'GitHub · @SaurabhJalendra', meta: 'contact', action: () => { window.open('https://github.com/SaurabhJalendra', '_blank'); } },
+      { id: 'do.linkedin', icon: 'in', title: 'LinkedIn · in/saurabh-jalendra', meta: 'contact', action: () => { window.open('https://linkedin.com/in/saurabh-jalendra', '_blank'); } },
+      { id: 'do.dl', icon: '↓', title: 'Download résumé (PDF)', meta: 'contact', action: () => {
+          // cv.pdf is synced into public/ by scripts/sync-content.mjs at build.
+          const a = document.createElement('a');
+          a.href = '/cv.pdf';
+          a.download = 'Saurabh-Jalendra-CV.pdf';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } },
     ],
     [themeName, terminalVisible, motion, showMinimap, assistantVisible, openFile, setTheme, setTerminalVisible, setShowMinimap, setMotion, setAssistantVisible, mod]
   );
@@ -381,6 +397,10 @@ interface PaletteOverlayProps extends Omit<CommandPaletteProps, 'open' | 'onClos
 }
 
 export default function PaletteOverlay({ kind, onClose, ...props }: PaletteOverlayProps) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  // Trap focus inside the palette while open; restore it to the previously
+  // focused element (e.g. the editor) on close.
+  useFocusTrap(dialogRef, kind !== null);
   if (!kind) return null;
   return (
     <div
@@ -391,10 +411,17 @@ export default function PaletteOverlay({ kind, onClose, ...props }: PaletteOverl
         zIndex: 999,
         background: 'rgba(0,0,0,0.45)',
         backdropFilter: 'blur(2px)',
+        WebkitBackdropFilter: 'blur(2px)',
         animation: 'palfade .12s ease-out',
       }}
     >
-      <div onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={dialogRef}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={kind === 'quickopen' ? 'Quick open file' : 'Command palette'}
+      >
         {kind === 'quickopen' && <QuickOpen open onClose={onClose} openFile={props.openFile} />}
         {kind === 'commands' && <CommandPalette open onClose={onClose} {...props} />}
       </div>

@@ -125,6 +125,8 @@ function TabStrip({ tabs, active, setActive, closeTab, moveTab }: TabStripProps)
 
   return (
     <div
+      role="tablist"
+      aria-label="Open editor tabs"
       style={{
         display: 'flex',
         background: T.chrome.titlebar,
@@ -173,6 +175,16 @@ function TabStrip({ tabs, active, setActive, closeTab, moveTab }: TabStripProps)
               setDragOver(null);
             }}
             onClick={() => !isClosing && setActive(p)}
+            role="tab"
+            aria-selected={isActive}
+            tabIndex={isClosing ? -1 : 0}
+            onKeyDown={(e) => {
+              if (isClosing) return;
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setActive(p);
+              }
+            }}
             className="ide-tab"
             style={{
               display: 'flex',
@@ -254,9 +266,20 @@ function TabStrip({ tabs, active, setActive, closeTab, moveTab }: TabStripProps)
   );
 }
 
+// True when the OS "reduce motion" setting is on. Returns false on the
+// server / before mount so the typewriter starts in its motion default.
+function reducedMotion(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 // Typed renderer. Given a body, returns the slice currently revealed plus
 // a "done" flag. ~600 chars per second by default; finishing is instant if
-// motion is disabled or if the same tab was previously fully typed.
+// motion is disabled, the OS prefers reduced motion, or the same tab was
+// previously fully typed.
 function useTypewriter(
   body: string,
   key: string,
@@ -265,7 +288,7 @@ function useTypewriter(
 ): number {
   const [shown, setShown] = useState<number>(motion && !completedRef.current[key] ? 0 : body.length);
   useEffect(() => {
-    if (!motion || completedRef.current[key]) {
+    if (!motion || reducedMotion() || completedRef.current[key]) {
       setShown(body.length);
       return;
     }

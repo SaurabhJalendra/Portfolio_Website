@@ -22,7 +22,8 @@ export const IDE_THEMES: Themes = {
       borderStrong: 'rgba(255,255,255,0.12)',
       fg: '#e6e6ed',
       fgDim: 'rgba(205,214,223,0.6)',
-      fgFainter: 'rgba(205,214,223,0.4)',
+      // Bumped 0.4 → 0.565 for WCAG AA (4.5:1 on editor #1f1f23). a11y fix.
+      fgFainter: 'rgba(205,214,223,0.565)',
       selBg: 'rgba(200,164,255,0.18)',
       hoverBg: 'rgba(255,255,255,0.04)',
       tabActive: '#1f1f23',
@@ -82,7 +83,8 @@ export const IDE_THEMES: Themes = {
       borderStrong: 'rgba(123,227,154,0.28)',
       fg: '#a8e9b8',
       fgDim: 'rgba(168,233,184,0.55)',
-      fgFainter: 'rgba(168,233,184,0.35)',
+      // Bumped 0.35 → 0.53 for WCAG AA (4.5:1 on editor #06100a). a11y fix.
+      fgFainter: 'rgba(168,233,184,0.53)',
       selBg: 'rgba(123,227,154,0.16)',
       hoverBg: 'rgba(123,227,154,0.06)',
       tabActive: '#06100a',
@@ -142,7 +144,8 @@ export const IDE_THEMES: Themes = {
       borderStrong: 'rgba(0,0,0,0.14)',
       fg: '#2a251f',
       fgDim: 'rgba(60,50,40,0.65)',
-      fgFainter: 'rgba(60,50,40,0.4)',
+      // Bumped 0.4 → 0.68 for WCAG AA (4.5:1 on editor #fbf8ef). a11y fix.
+      fgFainter: 'rgba(60,50,40,0.68)',
       selBg: 'rgba(124,77,220,0.12)',
       hoverBg: 'rgba(0,0,0,0.04)',
       tabActive: '#fbf8ef',
@@ -202,7 +205,8 @@ export const IDE_THEMES: Themes = {
       borderStrong: 'rgba(255,170,58,0.22)',
       fg: '#f0d9b5',
       fgDim: 'rgba(240,217,181,0.55)',
-      fgFainter: 'rgba(240,217,181,0.35)',
+      // Bumped 0.35 → 0.53 for WCAG AA (4.5:1 on editor #181410). a11y fix.
+      fgFainter: 'rgba(240,217,181,0.53)',
       selBg: 'rgba(255,170,58,0.14)',
       hoverBg: 'rgba(255,170,58,0.05)',
       tabActive: '#181410',

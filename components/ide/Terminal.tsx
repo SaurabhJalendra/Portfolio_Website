@@ -344,7 +344,7 @@ function exec(cmd: string, args: string[], ctx: ExecContext): TerminalLine[] {
     return [
       { kind: 'out', text: 'Saurabh Jalendra', color: 'bright' },
       { kind: 'out', text: '[Engineer · Product Builder]', color: 'info' },
-      { kind: 'out', text: 'available Q3 2026 — hello@saurabhjalendra.com' },
+      { kind: 'out', text: 'available Q3 2026 — saurabhjalendra@gmail.com' },
       { kind: 'out', text: '' },
     ];
   }
@@ -371,9 +371,9 @@ function exec(cmd: string, args: string[], ctx: ExecContext): TerminalLine[] {
 
   if (cmd === 'contact') {
     return [
-      { kind: 'out', text: 'email     hello@saurabhjalendra.com', color: 'bright' },
-      { kind: 'out', text: 'github    @saurabhjalendra' },
-      { kind: 'out', text: 'linkedin  in/saurabhjalendra' },
+      { kind: 'out', text: 'email     saurabhjalendra@gmail.com', color: 'bright' },
+      { kind: 'out', text: 'github    @SaurabhJalendra' },
+      { kind: 'out', text: 'linkedin  in/saurabh-jalendra' },
       { kind: 'out', text: 'response  median 24h · worst 72h' },
       { kind: 'out', text: '' },
     ];
@@ -436,7 +436,7 @@ function exec(cmd: string, args: string[], ctx: ExecContext): TerminalLine[] {
       { kind: 'out', text: 'content-type: text/html; charset=utf-8' },
       { kind: 'out', text: '' },
       { kind: 'out', text: '<!-- you found the curl. nice. -->', color: 'info' },
-      { kind: 'out', text: '<p>hi — i make things. hello@saurabhjalendra.com</p>' },
+      { kind: 'out', text: '<p>hi — i make things. saurabhjalendra@gmail.com</p>' },
       { kind: 'out', text: '' },
     ];
   }

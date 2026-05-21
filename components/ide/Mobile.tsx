@@ -22,12 +22,14 @@ import {
 import { chat } from '@/lib/assistant-client';
 
 // Hook: returns whether viewport width is below `bp` (default 900).
+// SSR-safe: initial render always returns `false` (desktop) so the server
+// and first client render agree — the real value is resolved in a
+// post-mount useEffect, avoiding a React hydration mismatch.
 export function useIsMobile(bp = 900): boolean {
-  const [m, setM] = useState<boolean>(() =>
-    typeof window !== 'undefined' ? window.innerWidth < bp : false
-  );
+  const [m, setM] = useState<boolean>(false);
   useEffect(() => {
     const h = () => setM(window.innerWidth < bp);
+    h();
     window.addEventListener('resize', h);
     return () => window.removeEventListener('resize', h);
   }, [bp]);
@@ -72,22 +74,24 @@ export default function MobileApp({ tweaks, setTweak }: MobileAppProps) {
       data-screen-label="01 Mobile Portfolio"
     >
       <TopBar T={T} tweaks={tweaks} setTweak={setTweak} />
-      <Hero T={T} />
-      <Section T={T} title="About" id="about">
-        <RenderedMarkdown body={P.files['about.md']} onLink={setSheetFile} />
-      </Section>
-      <Section T={T} title="Selected work" id="projects">
-        <Projects T={T} onOpen={setSheetFile} />
-      </Section>
-      <Section T={T} title="Writing" id="writing">
-        <WritingList T={T} onOpen={setSheetFile} />
-      </Section>
-      <Section T={T} title="Now" id="now" subtitle="week of May 19, 2026">
-        <RenderedMarkdown body={P.files['now.md']} onLink={setSheetFile} />
-      </Section>
-      <Section T={T} title="Reach me" id="contact">
-        <ContactCard T={T} />
-      </Section>
+      <main>
+        <Hero T={T} />
+        <Section T={T} title="About" id="about">
+          <RenderedMarkdown body={P.files['about.md']} onLink={setSheetFile} />
+        </Section>
+        <Section T={T} title="Selected work" id="projects">
+          <Projects T={T} onOpen={setSheetFile} />
+        </Section>
+        <Section T={T} title="Writing" id="writing">
+          <WritingList T={T} onOpen={setSheetFile} />
+        </Section>
+        <Section T={T} title="Now" id="now" subtitle="week of May 19, 2026">
+          <RenderedMarkdown body={P.files['now.md']} onLink={setSheetFile} />
+        </Section>
+        <Section T={T} title="Reach me" id="contact">
+          <ContactCard T={T} />
+        </Section>
+      </main>
       <Footer T={T} />
 
       {sheetFile && <FileSheet T={T} file={sheetFile} onClose={() => setSheetFile(null)} />}

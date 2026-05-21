@@ -88,11 +88,12 @@ function DesktopShell({ tweaks, setTweak }: DesktopShellProps) {
   // Narrow desktop: between 900-1180px we auto-hide assistant + minimap so
   // the editor stays usable. User tweaks are preserved.
   // Bumped from 1100 → 1180 to account for the wider assistant panel (440px).
-  const [narrow, setNarrow] = useState<boolean>(() =>
-    typeof window !== 'undefined' && window.innerWidth < 1180
-  );
+  // SSR-safe: initial render is always `false` (wide desktop) so server and
+  // first client render agree; the real width is read post-mount.
+  const [narrow, setNarrow] = useState<boolean>(false);
   useEffect(() => {
     const h = () => setNarrow(window.innerWidth < 1180);
+    h();
     window.addEventListener('resize', h);
     return () => window.removeEventListener('resize', h);
   }, []);
@@ -233,7 +234,7 @@ function DesktopShell({ tweaks, setTweak }: DesktopShellProps) {
   }, [tweaks.minimap, tweaks.terminal, tweaks.assistant, tweaks.sidebar, theme, showAssistant, showMinimap, sidebarWidth, assistantWidth, terminalHeight]);
 
   return (
-    <div style={grid} data-screen-label="01 IDE Portfolio">
+    <main style={grid} data-screen-label="01 IDE Portfolio" aria-label="Portfolio IDE">
       <TitleBar activeFile={activeTab} dirty={false} tweaks={tweaks} setTweak={setTweak} />
       <Sidebar
         activePanel={sidebarPanel}
@@ -357,6 +358,6 @@ function DesktopShell({ tweaks, setTweak }: DesktopShellProps) {
       )}
 
       <Splash />
-    </div>
+    </main>
   );
 }

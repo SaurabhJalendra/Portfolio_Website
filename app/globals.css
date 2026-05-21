@@ -41,8 +41,6 @@ body {
   }
 }
 
-/* Suppress default focus ring on draggable tabs etc.; components handle
-   their own focus visualizations. */
 button {
   font-family: inherit;
 }
@@ -51,4 +49,32 @@ button {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/*
+ * Visible keyboard focus indicator. Only applies to :focus-visible (keyboard
+ * / programmatic focus) so mouse clicks don't show a ring. Uses currentColor
+ * so the outline picks up whatever theme foreground the element renders in.
+ */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/*
+ * Respect the OS "reduce motion" setting. Catch-all that neutralises every
+ * keyframe animation and CSS transition, then specifically pins the infinite
+ * status-bar halo so it cannot loop. JS-driven animations (typewriter,
+ * fly-to-tab) check matchMedia separately in their own modules.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -14,6 +14,15 @@ declare global {
   }
 }
 
+// True when the OS "reduce motion" setting is on.
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 export async function flyToTab(
   chipEl: HTMLElement | null,
   path: string,
@@ -21,6 +30,11 @@ export async function flyToTab(
 ): Promise<void> {
   if (!chipEl || !openFile) {
     openFile?.(path);
+    return;
+  }
+  // Reduced-motion users skip the flying-clone animation — just open the file.
+  if (prefersReducedMotion()) {
+    openFile(path);
     return;
   }
   const from = chipEl.getBoundingClientRect();

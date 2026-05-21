@@ -16,7 +16,14 @@ import remarkGfm from 'remark-gfm';
 import dynamic from 'next/dynamic';
 import { ThemeCtx } from '@/lib/theme';
 import type { Theme } from '@/types/ide';
-import { ChartRenderer } from './ChartRenderer';
+
+// Lazy-load Recharts (~191 KB gzip) — charts appear in only a few blog posts,
+// so this keeps it out of the initial bundle. Same next/dynamic pattern as
+// the Mermaid diagram renderer below.
+const ChartRenderer = dynamic(
+  () => import('./ChartRenderer').then((m) => m.ChartRenderer),
+  { ssr: false, loading: () => null }
+);
 
 // Lazy-load Mermaid — touches document/window on import, breaks SSR otherwise.
 const DiagramRenderer = dynamic(
