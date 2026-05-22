@@ -11,6 +11,7 @@ import { PORTFOLIO_FS } from '@/lib/data';
 import { highlight, extractOutline } from '@/lib/syntax';
 import type { Theme, Token, FSNode } from '@/types/ide';
 import MarkdownPreview from './Preview';
+import DataPreview from './DataPreview';
 
 declare global {
   interface Window {
@@ -28,7 +29,7 @@ interface BreadcrumbProps {
 function Breadcrumb({ path, lang, viewMode, setViewMode }: BreadcrumbProps) {
   const T = useContext(ThemeCtx);
   const parts = path ? path.split('/') : [];
-  const canPreview = lang === 'md';
+  const canPreview = lang === 'md' || path === 'experience.json' || path === 'contact.yaml';
   return (
     <div
       style={{
@@ -619,12 +620,16 @@ export default function EditorPane({
   const body = PORTFOLIO_FS.files[active] || '(file not found)';
   const found = (PORTFOLIO_FS.tree as FSNode[]).find((n) => n.path === active);
   const lang = (found && 'lang' in found ? found.lang : flattenLang(active)) || 'md';
-  // Smart default: markdown files open in preview mode (visitors want to READ);
-  // JSON/YAML/INI open in code mode (the IDE metaphor lives in the data-format files).
-  // User toggle via ⇧⌘V or breadcrumb segmented control still works per-tab.
-  const viewMode = viewModes[active] || (lang === 'md' ? 'preview' : 'code');
+  // Files with a rendered preview: markdown (typography) + the two structured
+  // data files — experience.json → career timeline, contact.yaml → contact card.
+  const isDataPreview = active === 'experience.json' || active === 'contact.yaml';
+  const canPreview = lang === 'md' || isDataPreview;
+  // Smart default: previewable files open rendered (visitors want to READ);
+  // other JSON/YAML/INI open in code mode (the IDE metaphor lives there).
+  // User toggle via the breadcrumb segmented control still works per-tab.
+  const viewMode = viewModes[active] || (canPreview ? 'preview' : 'code');
   const setViewMode = (m: 'code' | 'preview') => setViewModes((prev) => ({ ...prev, [active]: m }));
-  const showPreview = viewMode === 'preview' && lang === 'md';
+  const showPreview = viewMode === 'preview' && canPreview;
 
   return (
     <>
@@ -640,7 +645,11 @@ export default function EditorPane({
         <TabStrip tabs={tabs} active={active} setActive={setActive} closeTab={closeTab} moveTab={moveTab} />
         <Breadcrumb path={active} lang={lang} viewMode={viewMode} setViewMode={setViewMode} />
         {showPreview ? (
-          <MarkdownPreview body={body} openFile={setActive} />
+          isDataPreview ? (
+            <DataPreview body={body} path={active} />
+          ) : (
+            <MarkdownPreview body={body} openFile={setActive} />
+          )
         ) : (
           <CodeBody
             body={body}
