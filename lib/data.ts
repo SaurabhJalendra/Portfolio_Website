@@ -1143,6 +1143,17 @@ Break it down and it has three parts:
 
 That's it. That's what planning is. And a language model supplies none of the three. It has read a lot of plans, so it can imitate one. But it has no internal sense that an action is expensive, or irreversible, or not worth doing. It has token statistics, not a cost function. Give it a task with a tight resource budget and it will happily propose something that blows the budget, because "blows the budget" isn't a thing it can feel. It can only describe.
 
+\`\`\`diagram
+graph TD
+    G([Goal]) --> L[LLM proposes candidate subgoals]
+    L --> WM[World Model predicts consequences]
+    L --> CF[Cost Function weighs effort, risk, worth]
+    WM --> SR{Search: lowest-cost plan}
+    CF --> SR
+    SR --> ACT([Action])
+    SR -.->|re-plan / veto| L
+\`\`\`
+
 ## The cost function is the part everyone forgets
 
 The world-model half of this gets all the attention. The cost function gets almost none, and it's the more interesting half. Effort, importance, resource allocation, risk — these aren't properties of the world. They're properties of what you want. A world model tells you a bridge will hold or break. Only a cost function tells you that the bridge breaking is unacceptable while the detour is merely annoying.
@@ -1164,6 +1175,12 @@ And for what they do, that's correct. When you're writing software, the real env
 ## Where it flips
 
 The reactive loop stops working the moment feedback gets expensive. You can't crash the robot ten thousand times to learn to walk. You can't run the chemistry experiment a million times. You can't place the real trade to find out it was wrong. When an action is slow, costly, or irreversible, you can't try-and-see — you have to imagine first. That's where the world model earns its place: it's the simulator you run when reality is too expensive to query.
+
+\`\`\`diagram
+graph TD
+    Q{Is feedback cheap and reversible?} -->|Yes: software| RL[Reactive loop - just try it]
+    Q -->|No: robots, trades, science| WM2[World model - imagine first]
+\`\`\`
 
 So the useful question is never "does this agent use a world model." It's: what is standing in for the world model? For software, cheap real feedback. For robotics and the physical world, a learned simulator. The architecture follows the price of feedback, and the labs building world models are building for the expensive end — embodied, physical, high-stakes — not the cheap-feedback digital end the coding agents already own.
 
@@ -1790,5 +1807,5 @@ const WRITING_ORDER = [
   'writing/2026-03-21-llm-programming-language.md',
 ];
 PORTFOLIO_FS.files['blog.md'] =
-  `# Writing\n\n> World models, planning, AI safety — newest first.\n\n---\n\n` +
+  `# Writing\n\n> World models, planning, and AI safety.\n\n---\n\n` +
   WRITING_ORDER.map((p) => PORTFOLIO_FS.files[p]).filter(Boolean).join('\n\n---\n\n');
