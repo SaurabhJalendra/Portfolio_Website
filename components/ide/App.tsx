@@ -80,8 +80,8 @@ function DesktopShell({ tweaks, setTweak }: DesktopShellProps) {
   const theme = IDE_THEMES[tweaks.theme] || IDE_THEMES.midnight;
 
   // IDE runtime state (ephemeral)
-  const [tabs, setTabs] = useState<string[]>(['README.md', 'about.md', 'projects/haze-benchmark.md']);
-  const [activeTab, setActiveTab] = useState<string | null>('README.md');
+  const [tabs, setTabs] = useState<string[]>(['blog.md', 'README.md', 'about.md']);
+  const [activeTab, setActiveTab] = useState<string | null>('blog.md');
   const [sidebarPanel, setSidebarPanel] = useState<ActivePanel>('explorer');
   const [paletteMode, setPaletteMode] = useState<PaletteKind>(null);
 

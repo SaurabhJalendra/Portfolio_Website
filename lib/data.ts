@@ -653,12 +653,7 @@ export const PORTFOLIO_FS: PortfolioFS = {
         { type: 'file', path: 'projects/side/bank-fraud-detection.md',             lang: 'md' },
       ]},
     ]},
-    { type: 'dir', path: 'writing', children: [
-      { type: 'file', path: 'writing/2026-04-06-introducing-haze.md',     lang: 'md' },
-      { type: 'file', path: 'writing/2026-04-06-sensory-data-gap.md',     lang: 'md' },
-      { type: 'file', path: 'writing/2026-03-25-personal-ai-gemma4.md',   lang: 'md' },
-      { type: 'file', path: 'writing/2026-03-21-llm-programming-language.md', lang: 'md' },
-    ]},
+    { type: 'file', path: 'blog.md', lang: 'md', pinned: true },
     { type: 'file', path: 'experience.json', lang: 'json' },
     { type: 'file', path: 'now.md',          lang: 'md' },
     { type: 'file', path: 'contact.yaml',    lang: 'yaml' },
@@ -1130,6 +1125,57 @@ Production fraud systems at JPMC / Stripe / PayPal aren't single classifiers —
 - The autoencoder reconstruction-loss approach is structurally identical to how SAE-feature-activation can flag out-of-distribution inputs in mechanistic interpretability work
 
 [→ GitHub: SaurabhJalendra/Bank_fraud_detection](https://github.com/SaurabhJalendra/Bank_fraud_detection)`,
+
+    'writing/2026-06-24-strategy-is-not-generation.md': `# Strategy Is Not Generation
+*Published 2026-06-24 · 6 min read*
+
+There's a popular idea right now that if you wrap a language model in a loop and let it write a to-do list, you've built a planning agent. You haven't. You've built a system that produces plausible-looking plans, which is a different thing, and the difference is the whole problem.
+
+A plan isn't a list of steps. A plan is a claim about the future: if I do this, that will happen, and it will be worth it. To make that claim you need two things a language model doesn't have. You need a model of consequences — what actually happens when you act. And you need a model of cost — what each action takes, what it risks, what it's worth. Generating a sensible-sounding sequence of steps requires neither. Planning requires both.
+
+## What strategizing actually is
+
+Break it down and it has three parts:
+
+- A world model: predict the consequence of an action. Do X, and the state becomes Y.
+- A cost function: weigh those consequences. How much effort does this take? What does it risk? Is the outcome worth the price?
+- Search: given the model and the cost, find the sequence of actions that reaches the goal for the lowest cost.
+
+That's it. That's what planning is. And a language model supplies none of the three. It has read a lot of plans, so it can imitate one. But it has no internal sense that an action is expensive, or irreversible, or not worth doing. It has token statistics, not a cost function. Give it a task with a tight resource budget and it will happily propose something that blows the budget, because "blows the budget" isn't a thing it can feel. It can only describe.
+
+## The cost function is the part everyone forgets
+
+The world-model half of this gets all the attention. The cost function gets almost none, and it's the more interesting half. Effort, importance, resource allocation, risk — these aren't properties of the world. They're properties of what you want. A world model tells you a bridge will hold or break. Only a cost function tells you that the bridge breaking is unacceptable while the detour is merely annoying.
+
+Strategy lives in the cost function. The world model tells you what's possible; the cost function tells you what's worth it. Leave it out and you don't have a planner — you have a generator that confidently suggests things it has no way to price.
+
+## Why hierarchy
+
+Planning over raw actions doesn't scale. You don't plan a trip as a sequence of footsteps; you plan "book the flight, pack, get to the airport," and only then expand each piece. Flat planning over primitive actions has a horizon that explodes — too many sequences, no way to assign credit across thousands of steps.
+
+Hierarchy fixes this with temporal abstraction. Each level plans over the level below at a coarser grain, so the effective horizon at every level stays short. This is an old idea — hierarchical task networks, the options framework — and it's where learned world models went too: DeepMind's Director puts a manager that picks subgoals over a worker that achieves them, inside a learned world model. The point isn't the specific system. The point is that hierarchy lets the cost function operate at the level that matters — is this goal worth pursuing, at the top; is this motion efficient, at the bottom.
+
+## How today's agents actually plan, and why they're right not to
+
+Here's the part that keeps this honest. The most successful planning agents shipping today — Claude Code, Codex — do none of the above. No world model, no cost function, no search. They run a reactive loop: the model proposes the next action, runs it in the real environment, looks at what actually happened, and reacts. The plan is a to-do list it can rewrite at any moment.
+
+And for what they do, that's correct. When you're writing software, the real environment is a free, fast, near-perfect simulator. Run the code, read the error, fix it. You don't need to imagine the consequence of an action when you can just take it and observe the result for almost nothing. A learned world model would be slower and worse than reality itself. The reactive loop wins because feedback is cheap.
+
+## Where it flips
+
+The reactive loop stops working the moment feedback gets expensive. You can't crash the robot ten thousand times to learn to walk. You can't run the chemistry experiment a million times. You can't place the real trade to find out it was wrong. When an action is slow, costly, or irreversible, you can't try-and-see — you have to imagine first. That's where the world model earns its place: it's the simulator you run when reality is too expensive to query.
+
+So the useful question is never "does this agent use a world model." It's: what is standing in for the world model? For software, cheap real feedback. For robotics and the physical world, a learned simulator. The architecture follows the price of feedback, and the labs building world models are building for the expensive end — embodied, physical, high-stakes — not the cheap-feedback digital end the coding agents already own.
+
+## So where does the language model fit?
+
+Not as the planner. At most as a proposer. It's read a lot of plans, so it's a decent prior on which subgoals are worth considering. But a proposer is not a strategist. The strategist is the part that can say no — the part with the model of consequences and the cost function, that overrules a plausible-but-wrong suggestion.
+
+I worked on a trading agent where several sub-agents proposed actions and a risk manager held a veto over all of them. The risk manager was the only part doing strategy, because it was the only part modeling consequence and cost. The others generated; one decided. That ratio is the lesson: generation is cheap and plural, judgment is singular and expensive.
+
+## The takeaway
+
+If you want to build something that strategizes rather than something that talks about strategizing, the parts are clear: a model of consequences, a model of costs, a search that puts them together, organized as a hierarchy so it scales. The language model is, at best, the intern who suggests options. The planning happens in the part that knows what things cost.`,
 
     'writing/2026-04-06-introducing-haze.md': `# Introducing HAZE: A Benchmark for How AI Handles Bad Prompts
 *Published 2026-04-06 · 5 min read*
@@ -1733,3 +1779,16 @@ prefers:     "async-first, sync only when it earns it"`,
 
   // Outline (heading map) is computed on the fly from each file's markdown.
 };
+
+// Single blog page: every writing post aggregated newest-first into one scrollable view.
+// To add a post: add its body to `files` above, then prepend its path here.
+const WRITING_ORDER = [
+  'writing/2026-06-24-strategy-is-not-generation.md',
+  'writing/2026-04-06-introducing-haze.md',
+  'writing/2026-04-06-sensory-data-gap.md',
+  'writing/2026-03-25-personal-ai-gemma4.md',
+  'writing/2026-03-21-llm-programming-language.md',
+];
+PORTFOLIO_FS.files['blog.md'] =
+  `# Writing\n\n> World models, planning, AI safety — newest first.\n\n---\n\n` +
+  WRITING_ORDER.map((p) => PORTFOLIO_FS.files[p]).filter(Boolean).join('\n\n---\n\n');
