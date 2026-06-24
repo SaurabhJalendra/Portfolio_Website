@@ -1,4 +1,4 @@
-# Project — HAZE Benchmark (Handling Ambiguous Zero-clarity Expressions)
+# Project — Clarification Benchmark (handling ambiguous, zero-clarity prompts)
 
 **Repo:** https://github.com/SaurabhJalendra/HAZE-Handling-Ambiguous-Zero-clarity-Expressions-
 **Note:** The trailing dash in the URL **is correct** — verified 2026-05-14 via `gh api`. A URL without the dash returns 404. Older CV variants used a wrong URL (`HAZE-Hardness-of-Ambiguity-Zero-shot-Evaluation`) — that repo does not exist and must be replaced.
@@ -30,14 +30,14 @@ Underspecified · Vague · Contradictory · Implicit assumption · Missing conte
 Direct · Staged · Agentic-Scripted · Agentic-Human.
 
 ## The differentiator: 500 negative controls
-HAZE includes **500 clear-control prompts as negative controls** so that an over-clarifying agent is penalized. The false-positive control is the contribution — every other ambiguity benchmark misses this.
+The benchmark includes **500 clear-control prompts as negative controls** so that an over-clarifying agent is penalized. The false-positive control is the contribution — every other ambiguity benchmark misses this.
 
 ## Engineering substance
 - **17 Python modules**, **111 passing tests**, ruff clean
 - Pydantic v2, anthropic + openai SDKs, mock + OpenAI + Anthropic model backends
-- CLI: `haze evaluate / report / validate`
-- Agentic simulated-user evaluation loop with turn-efficiency metrics at `src/haze/agentic/{loop.py, sim_user.py, turn_manager.py}`
-- Companion **Claude Code plugin** at `haze-marketplace/haze-research/` ships 5 specialized agents (researcher, dataset-builder, eval-runner, paper-writer, internal-reviewer) and 5 workflow skills
+- CLI with `evaluate / report / validate` commands
+- Agentic simulated-user evaluation loop with turn-efficiency metrics (`loop.py, sim_user.py, turn_manager.py`)
+- Companion **Claude Code plugin** ships 5 specialized agents (researcher, dataset-builder, eval-runner, paper-writer, internal-reviewer) and 5 workflow skills
 - Project hygiene: Apache 2.0 LICENSE, IDEA.md, CONTRIBUTING.md, pyproject.toml — full open-source discipline
 
 ## Dataset progress (47% complete)
@@ -54,4 +54,4 @@ Pre-emptively caught and disclosed in the README "Anti-Patterns We Avoided" sect
 The act of disclosing these openly is part of the research-quality signal.
 
 ## Why this matters
-This is the strongest single research artifact on Saurabh's public GitHub. Anthropic, OpenAI, DeepMind, Meta FAIR — all of them ship benchmarks; HAZE is the kind of clarification-behavior measurement that evaluation and interpretability teams need.
+This is the strongest single research artifact on Saurabh's public GitHub. Anthropic, OpenAI, DeepMind, Meta FAIR — all of them ship benchmarks; it's the kind of clarification-behavior measurement that evaluation and interpretability teams need.

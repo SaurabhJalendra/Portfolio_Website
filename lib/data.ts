@@ -44,8 +44,8 @@ export const CAREER_COMMITS: CareerCommit[] = [
     date: '2026-04-08',
     hash: '7e1b9f0',
     type: 'feat',
-    message: 'shipped HAZE Benchmark v0 (first original research artifact)',
-    link: 'projects/haze-benchmark.md',
+    message: 'shipped the Clarification Benchmark v0 (first original research artifact)',
+    link: 'projects/clarification-benchmark.md',
   },
   {
     date: '2026-03-15',
@@ -640,7 +640,7 @@ export const PORTFOLIO_FS: PortfolioFS = {
       { type: 'file', path: 'projects/quantum-enhanced-simulation-learning.md', lang: 'md' },
       { type: 'file', path: 'projects/simulating-anything.md',                  lang: 'md' },
       { type: 'file', path: 'projects/ai-trading-agent.md',                     lang: 'md' },
-      { type: 'file', path: 'projects/haze-benchmark.md',                       lang: 'md' },
+      { type: 'file', path: 'projects/clarification-benchmark.md',                       lang: 'md' },
       { type: 'file', path: 'projects/klares-fila.md',                          lang: 'md' },
       { type: 'file', path: 'projects/prism-skindb.md',                         lang: 'md' },
       { type: 'file', path: 'projects/quant-agent.md',                          lang: 'md' },
@@ -719,7 +719,7 @@ systematic; the AI pivot crystallized in late 2024 with Klares.
 ## what I'm working on getting better at
 
 - **Open-source contribution cadence** — more PRs to JAX / Equinox / LlamaIndex / PySR rather than only personal repos
-- **Paper-writing throughput** — Simulating Anything and HAZE are both unpublished; getting workshop submissions out is the immediate goal
+- **Paper-writing throughput** — Simulating Anything and the clarification benchmark are both unpublished; getting workshop submissions out is the immediate goal
 - **Sharing work-in-progress publicly** — defaulting to "post the half-formed thought" instead of waiting for the polished version
 - **Mechanistic interpretability depth** — TransformerLens / nnsight / SAE feature analysis are next on the curriculum
 - **RLHF infrastructure** — moving from "I understand the algorithm" to "I have written the distributed training loop"
@@ -834,7 +834,7 @@ another.
 
 Private repository — code available on request.`,
 
-    'projects/haze-benchmark.md': `# HAZE Benchmark — measuring LLM clarification behavior
+    'projects/clarification-benchmark.md': `# Clarification Benchmark — measuring LLM clarification behavior
 
 **Role:** Built
 **Stack:** Python, Pydantic v2, anthropic + openai SDKs, pytest, Apache 2.0 (code) / CC-BY-4.0 (planned for dataset)
@@ -855,16 +855,16 @@ tests all three jointly across multiple domains in agentic mode.
 - Built the first benchmark to score the full \`bad prompt → clarification → completion\` loop with per-stage metrics: Stage 1 detection F1 + FPR, Stage 2 clarification quality, Stage 3 task completion
 - Curated a **210-instance human-authored seed dataset** spanning 5 domains — code, creative writing, data analysis, general assistance, reasoning — across a 7-type ambiguity taxonomy (underspecified, vague, contradictory, implicit-assumption, missing-context, overloaded, referential)
 - Added **500 clear-control prompts as negative controls** — penalizes over-clarifying agents; this false-positive control is the differentiating contribution
-- Implemented agentic simulated-user evaluation loop with turn-efficiency metrics (\`src/haze/agentic/{loop.py, sim_user.py, turn_manager.py}\`)
+- Implemented agentic simulated-user evaluation loop with turn-efficiency metrics (\`loop.py, sim_user.py, turn_manager.py\`)
 - 17 modules, 111 tests passing, full project hygiene (Apache 2.0 LICENSE, IDEA.md, CONTRIBUTING.md, pyproject.toml); pre-emptively detected and disclosed dataset confounds (length: Cohen's d=1.6; BoW shortcut: 76.2% accuracy without semantics) — fix in progress
 
 ## outcome
 
 - Dataset: 210 seeds + 500 controls complete; 400 synthetic-validated and 390 real-sourced instances in progress
-- Companion Claude Code plugin (\`haze-marketplace/haze-research/\`) ships 5 specialized agents (researcher, dataset-builder, eval-runner, paper-writer, internal-reviewer) and 5 workflow skills
+- Companion Claude Code plugin ships 5 specialized agents (researcher, dataset-builder, eval-runner, paper-writer, internal-reviewer) and 5 workflow skills
 - Self-audit confounds documented openly in the README "Anti-Patterns We Avoided" section — the act of disclosing them is part of the research-quality signal
 
-[→ GitHub: SaurabhJalendra/HAZE-Handling-Ambiguous-Zero-clarity-Expressions-](https://github.com/SaurabhJalendra/HAZE-Handling-Ambiguous-Zero-clarity-Expressions-)`,
+[→ View the repo on GitHub](https://github.com/SaurabhJalendra/HAZE-Handling-Ambiguous-Zero-clarity-Expressions-)`,
 
     'projects/klares-fila.md': `# Klares + Fila — document intelligence + multilingual portfolio agent
 
@@ -1194,7 +1194,7 @@ I worked on a trading agent where several sub-agents proposed actions and a risk
 
 If you want to build something that strategizes rather than something that talks about strategizing, the parts are clear: a model of consequences, a model of costs, a search that puts them together, organized as a hierarchy so it scales. The language model is, at best, the intern who suggests options. The planning happens in the part that knows what things cost.`,
 
-    'writing/2026-04-06-introducing-haze.md': `# Real People Write Bad Prompts. Can AI Handle That?
+    'writing/2026-04-06-bad-prompts.md': `# Real People Write Bad Prompts. Can AI Handle That?
 *Published 2026-04-06 · 5 min read*
 
 "Sort this list." "Make it better." "Fix the bug."
@@ -1203,13 +1203,13 @@ This is how real people talk to AI. Not carefully engineered prompts — messy, 
 
 And most of the time, the model just... guesses. It picks the most likely interpretation, produces a confident response, and moves on. Sometimes it's right. Often it's wrong. It almost never asks for clarification.
 
-I've been building a benchmark to measure this: **HAZE — Handling Ambiguous, Zero-clarity Expressions**.
+I've been building a benchmark to measure exactly this — handling ambiguous, zero-clarity prompts.
 
-## What HAZE Measures
+## What the Benchmark Measures
 
 Most benchmarks evaluate LLMs on well-formed inputs — HumanEval gives you a precise function signature, MMLU gives you a clear multiple-choice question. But real-world usage is nothing like this.
 
-HAZE evaluates the full ambiguity-handling loop:
+It evaluates the full ambiguity-handling loop:
 
 \`\`\`diagram
 graph TD
@@ -1233,10 +1233,10 @@ This reveals exactly *where* models fail. Some are great at detection but terrib
 
 ## 7 Types of Ambiguity
 
-Not all vagueness is the same. HAZE categorizes ambiguity into 7 types:
+Not all vagueness is the same. The benchmark categorizes ambiguity into 7 types:
 
 \`\`\`chart:bar
-title: HAZE Ambiguity Categories
+title: Ambiguity Categories
 data:
   - label: Underspecified
     value: 280
@@ -1276,7 +1276,7 @@ data:
     value: 30
   - label: ClarifyMT
     value: 25
-  - label: HAZE
+  - label: Ours
     value: 95
 ylabel: Coverage Score (%)
 \`\`\`
@@ -1287,15 +1287,15 @@ Existing benchmarks each tackle a piece:
 - **QuestBench** evaluates question generation but not task completion
 - **ClarifyMT-Bench** covers multi-turn but only for translation
 
-None of them evaluate the *full interactive workflow* across multiple domains. HAZE does.
+None of them evaluate the *full interactive workflow* across multiple domains. This benchmark does.
 
 ## Multi-Domain Coverage
 
-HAZE spans 5 domains — because ambiguity looks different in code vs. creative writing vs. data analysis:
+The benchmark spans 5 domains — because ambiguity looks different in code vs. creative writing vs. data analysis:
 
 \`\`\`diagram
 graph TD
-    A[HAZE Benchmark] --> B[Code Generation]
+    A[The Benchmark] --> B[Code Generation]
     A --> C[Creative Writing]
     A --> D[Data Analysis]
     A --> E[General Assistance]
@@ -1309,7 +1309,7 @@ graph TD
     H --> I[Human Performance Baselines]
 \`\`\`
 
-A model that handles ambiguity well in code ("fix the bug") might fail completely in creative writing ("make it more engaging"). HAZE measures both.
+A model that handles ambiguity well in code ("fix the bug") might fail completely in creative writing ("make it more engaging"). The benchmark measures both.
 
 ## By the Numbers
 
@@ -1327,7 +1327,7 @@ The gap between detection and completion is even more revealing. Models that sco
 
 ## What is Next
 
-HAZE is targeting the **NeurIPS/ICML Datasets and Benchmarks** track. The goal: push the field toward AI that doesn't just answer — it *understands what you actually meant*.
+The benchmark is targeting the **NeurIPS/ICML Datasets and Benchmarks** track. The goal: push the field toward AI that doesn't just answer — it *understands what you actually meant*.
 
 The benchmark, evaluation code, and leaderboard will be open-sourced. If you are working on ambiguity handling or clarification in LLMs, I would love to collaborate.`,
 
@@ -1725,7 +1725,7 @@ takes up. (See [nownownow.com](https://nownownow.com) for the convention.)
 
 ## working on
 - **Phase 2 portfolio rewrite** — porting the IDE-shell design into Next.js 16 + App Router; this page lives inside that
-- **HAZE Benchmark v0.2** — closing the length-confound + BoW-shortcut on the dataset (Cohen's d=1.6 → target <0.3); 400 synthetic-validated + 390 real-sourced instances next
+- **Clarification Benchmark v0.2** — closing the length-confound + BoW-shortcut on the dataset (Cohen's d=1.6 → target <0.3); 400 synthetic-validated + 390 real-sourced instances next
 - **Anthropic Fellows application prep** — RL + agentic-evaluation workstream
 - **Simulating Anything V4** — DreamerV4 RSSMv2, equation-to-sim parser, OpenFOAM/GROMACS/SUMO bridges, sim-to-real validation; ADR-0001 pivot to AMI-style cognitive architecture (Phase 1: discovery engine; Phases 2–4 stubbed)
 - **Klares 2026-Q2 release** — Docling adoption (replacing LlamaParse SaaS), ground-truth + synthetic-data evaluation harness, multi-document production dashboard, \`qa_matcher.py\` for filling new DDQs from prior corpus
@@ -1801,7 +1801,7 @@ prefers:     "async-first, sync only when it earns it"`,
 // To add a post: add its body to `files` above, then prepend its path here.
 const WRITING_ORDER = [
   'writing/2026-06-24-strategy-is-not-generation.md',
-  'writing/2026-04-06-introducing-haze.md',
+  'writing/2026-04-06-bad-prompts.md',
   'writing/2026-04-06-sensory-data-gap.md',
   'writing/2026-03-25-personal-ai-gemma4.md',
   'writing/2026-03-21-llm-programming-language.md',
