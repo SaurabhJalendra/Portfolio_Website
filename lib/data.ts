@@ -555,7 +555,7 @@ export const SKILL_EXTENSIONS: SkillExtension[] = [
     downloads: 2,
     rating: 4.0,
     publisher: PUBLISHER,
-    description: 'Custom MCP integrations for Personal Agents and HAZE plugins',
+    description: 'Custom MCP integrations for Personal Agents',
     installed: true,
   },
   {
@@ -579,7 +579,7 @@ export const SKILL_EXTENSIONS: SkillExtension[] = [
     downloads: 2,
     rating: 4.0,
     publisher: PUBLISHER,
-    description: 'Risk-Manager-as-veto, HAZE clarification benchmark, negative controls',
+    description: 'Risk-Manager-as-veto, clarification benchmark, negative controls',
     installed: true,
     featured: true,
   },
@@ -712,7 +712,7 @@ systematic; the AI pivot crystallized in late 2024 with Klares.
 - **Production AI shipping** — Klares document intelligence (retrieval faithfulness 78% → 94% via re-rank + tenant pre-filter), International Citizen (vision-LLM ingestion across ~500+ document types, 24+ currencies, 3 languages), Trading Agent (8-agent orchestration with Risk-Manager veto)
 - **Agent orchestration** — Personal-Agents career command center coordinates a CV pipeline, portfolio site, LinkedIn workflow, and an LLM-Wiki knowledge base across 6 specialized subagents and 8+ skills (built on Claude Code)
 - **World models in JAX/Equinox** — Simulating Anything implements 192 simulation domains, RSSM world models, and symbolic regression (PySR/SINDy) recovering known physical laws with R² ≥ 0.999 on 11/14 core domains
-- **Evaluation + agent control** — Risk-Manager-as-veto in the Trading Agent, the HAZE Benchmark for measuring LLM clarification behavior with negative controls
+- **Evaluation + agent control** — Risk-Manager-as-veto in the Trading Agent, plus a clarification-behavior benchmark with negative controls
 - **Operations + business judgment** — 6 years running a family marketing-services business (Jan 2018 – Mar 2024) before the AI pivot. I understand how revenue actually happens, not just how to write code.
 - **Credential-tracked study** — 9 LinkedIn-listed certifications (Mar–May 2026): all 4 DeepLearning.AI math foundations (Linear Algebra, Calculus, Mathematics for ML, Probability & Statistics for ML), the Anthropic Claude series (Claude 101, Claude Code 101, Claude Code in Action, AI Fluency)
 
