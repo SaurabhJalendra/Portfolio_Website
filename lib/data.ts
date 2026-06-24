@@ -1127,72 +1127,92 @@ Production fraud systems at JPMC / Stripe / PayPal aren't single classifiers —
 [→ GitHub: SaurabhJalendra/Bank_fraud_detection](https://github.com/SaurabhJalendra/Bank_fraud_detection)`,
 
     'writing/2026-06-24-strategy-is-not-generation.md': `# Strategy Is Not Generation
-*Published 2026-06-24 · 6 min read*
+*Published 2026-06-24 · 8 min read*
 
-There's a popular idea right now that if you wrap a language model in a loop and let it write a to-do list, you've built a planning agent. You haven't. You've built a system that produces plausible-looking plans, which is a different thing, and the difference is the whole problem.
+There's a popular idea that if you wrap a language model in a loop and let it keep a to-do list, you've built a planning agent. You haven't. You've built something that produces plausible plans, which is a different thing — and the gap between them is the whole problem.
 
-A plan isn't a list of steps. A plan is a claim about the future: if I do this, that will happen, and it will be worth it. To make that claim you need two things a language model doesn't have. You need a model of consequences — what actually happens when you act. And you need a model of cost — what each action takes, what it risks, what it's worth. Generating a sensible-sounding sequence of steps requires neither. Planning requires both.
+A plan is not a list of steps. A plan is a claim about the future: if I do this, that will happen, and it will be worth it. That claim has three parts, and a language model supplies none of them.
 
-## What strategizing actually is
+## Planning is three things
 
-Break it down and it has three parts:
+Strip planning down to its machinery and you keep finding the same three pieces:
 
-- A world model: predict the consequence of an action. Do X, and the state becomes Y.
-- A cost function: weigh those consequences. How much effort does this take? What does it risk? Is the outcome worth the price?
-- Search: given the model and the cost, find the sequence of actions that reaches the goal for the lowest cost.
+- A world model — predicts consequences. Do X, and the state becomes Y. This is the part that has had a great decade: MuZero learned a model good enough to plan Go and chess without being told the rules; DreamerV3 learned one good enough to train a controller entirely inside its own imagination.
+- A cost function — says what's worth it. How much effort, how much risk, what you're willing to trade for what.
+- Search — given the model and the cost, finds the sequence of actions that scores best. Model-predictive control, tree search, trajectory optimization. Without it you have a reflex, not a plan.
 
-That's it. That's what planning is. And a language model supplies none of the three. It has read a lot of plans, so it can imitate one. But it has no internal sense that an action is expensive, or irreversible, or not worth doing. It has token statistics, not a cost function. Give it a task with a tight resource budget and it will happily propose something that blows the budget, because "blows the budget" isn't a thing it can feel. It can only describe.
+As one line: planning is finding the actions that minimize a cost, evaluated under a model of what will happen. Predict, evaluate, search. A language model is none of the three. It has read millions of plans, so it can imitate one beautifully. But imitation is not prediction, and fluency is not evaluation.
 
 \`\`\`diagram
 graph TD
-    G([Goal]) --> L[LLM proposes candidate subgoals]
-    L --> WM[World Model predicts consequences]
-    L --> CF[Cost Function weighs effort, risk, worth]
-    WM --> SR{Search: lowest-cost plan}
+    G([Goal]) --> L[Language model proposes candidate plans]
+    L --> WM[World model predicts consequences]
+    L --> CF[Cost function - what is it worth]
+    WM --> SR{Search - pick the best plan}
     CF --> SR
     SR --> ACT([Action])
-    SR -.->|re-plan / veto| L
+    SR -.->|reject / re-propose| L
 \`\`\`
 
-## The cost function is the part everyone forgets
+## A chess engine with no opinion
 
-The world-model half of this gets all the attention. The cost function gets almost none, and it's the more interesting half. Effort, importance, resource allocation, risk — these aren't properties of the world. They're properties of what you want. A world model tells you a bridge will hold or break. Only a cost function tells you that the bridge breaking is unacceptable while the detour is merely annoying.
+Here's the cleanest way to see that the cost function does the real work. Take a chess engine and give it a perfect world model: it knows every legal move and the exact position each one leads to. Now flatten its evaluation so every position scores zero. What does it do?
 
-Strategy lives in the cost function. The world model tells you what's possible; the cost function tells you what's worth it. Leave it out and you don't have a planner — you have a generator that confidently suggests things it has no way to price.
+It plays random legal chess. The search runs flawlessly, the model is exact, and the thing is an idiot — because nothing tells it which of the futures it can perfectly predict is any good. The value function is what turns a simulator into a strategist. This isn't a thought experiment: MuZero's headline contribution wasn't learning the dynamics of Go — Go's dynamics are trivial and free. It was learning the value. The model tells you what's possible; the cost function tells you what's worth it. Strategy lives entirely in the second one.
 
-## Why hierarchy
+## The part everyone forgets — and the hard part
 
-Planning over raw actions doesn't scale. You don't plan a trip as a sequence of footsteps; you plan "book the flight, pack, get to the airport," and only then expand each piece. Flat planning over primitive actions has a horizon that explodes — too many sequences, no way to assign credit across thousands of steps.
+World models get the attention. The cost function gets a sentence, usually, and it's the more interesting half — and the harder one.
 
-Hierarchy fixes this with temporal abstraction. Each level plans over the level below at a coarser grain, so the effective horizon at every level stays short. This is an old idea — hierarchical task networks, the options framework — and it's where learned world models went too: DeepMind's Director puts a manager that picks subgoals over a worker that achieves them, inside a learned world model. The point isn't the specific system. The point is that hierarchy lets the cost function operate at the level that matters — is this goal worth pursuing, at the top; is this motion efficient, at the bottom.
+Think about what a cost function actually has to encode. Importance: which subgoals matter more. Effort: that some actions are expensive. Risk: that the average outcome isn't the only thing you care about — a plan that's great in expectation and occasionally catastrophic is not a great plan. And irreversibility: that a step you can't take back should cost more than one you can, even when both reach the goal.
 
-## How today's agents actually plan, and why they're right not to
+That last one is where strategy hides in plain sight. Two routes up a mountain: the world model says both reach the summit. One is short and crosses a loose scree slope where a single slip is unrecoverable; the other is longer, switchbacked, reversible at every step. Same model, same prediction, same feasibility. The only thing separating a reckless agent from a strategic one is how the cost function charges for irreversibility. No new prediction required — just a different opinion about what a mistake is worth.
 
-Here's the part that keeps this honest. The most successful planning agents shipping today — Claude Code, Codex — do none of the above. No world model, no cost function, no search. They run a reactive loop: the model proposes the next action, runs it in the real environment, looks at what actually happened, and reacts. The plan is a to-do list it can rewrite at any moment.
+Or take the most mundane planner you own. A GPS has a near-perfect model of every road's travel time and still can't route you until you tell it what to minimize — time, tolls, simplicity, avoiding highways. The map is shared by everyone in the city. The objective is what makes it your route.
 
-And for what they do, that's correct. When you're writing software, the real environment is a free, fast, near-perfect simulator. Run the code, read the error, fix it. You don't need to imagine the consequence of an action when you can just take it and observe the result for almost nothing. A learned world model would be slower and worse than reality itself. The reactive loop wins because feedback is cheap.
+And here's the uncomfortable part: we usually can't write the cost function down. Nobody can hand-specify "good summary" or "helpful answer" as a formula. So the entire modern alignment stack is one long admission of this — RLHF doesn't hand a model a goal, it learns a cost function from human comparisons, because we couldn't write one. That the cost function has its own famous failure mode — reward hacking, specification gaming, Goodhart — is the tell. If it were the easy half, it wouldn't have a decade of papers about the ways it breaks. The cost function is interesting precisely because it's hard.
 
-## Where it flips
+## Why language models don't plan
 
-The reactive loop stops working the moment feedback gets expensive. You can't crash the robot ten thousand times to learn to walk. You can't run the chemistry experiment a million times. You can't place the real trade to find out it was wrong. When an action is slow, costly, or irreversible, you can't try-and-see — you have to imagine first. That's where the world model earns its place: it's the simulator you run when reality is too expensive to query.
+So where does that leave the LLM-with-a-to-do-list? With a strong claim and weak evidence.
 
-\`\`\`diagram
-graph TD
-    Q{Is feedback cheap and reversible?} -->|Yes: software| RL[Reactive loop - just try it]
-    Q -->|No: robots, trades, science| WM2[World model - imagine first]
-\`\`\`
+When you actually test planning, LLMs fall over. On PlanBench — ordinary block-stacking problems a classical planner solves in milliseconds — GPT-4-class models produce valid plans only a small fraction of the time, and when you rename the blocks so the model can't pattern-match its training data, performance collapses toward zero. That collapse is the diagnosis: the model was retrieving the surface of plans it had seen, not reasoning about states and consequences.
 
-So the useful question is never "does this agent use a world model." It's: what is standing in for the world model? For software, cheap real feedback. For robotics and the physical world, a learned simulator. The architecture follows the price of feedback, and the labs building world models are building for the expensive end — embodied, physical, high-stakes — not the cheap-feedback digital end the coding agents already own.
+The reasoning models — o1 and its descendants, trained with RL to think before answering — genuinely raised the floor here; they're far better at these puzzles than the previous generation. But they degrade the same way once the problems get long or the names get scrambled, they give no guarantees, and they cost orders of magnitude more than a symbolic planner that solves the same task perfectly and instantly. The gains are real and the ceiling is still a ceiling.
 
-## So where does the language model fit?
+The deeper problem is verification. A planner has to know a bad plan when it sees one — and LLMs are notably bad at judging their own output; without an external check, self-critique doesn't reliably help and sometimes makes things worse. That's fatal for planning, because a search is only as good as the evaluation steering it.
 
-Not as the planner. At most as a proposer. It's read a lot of plans, so it's a decent prior on which subgoals are worth considering. But a proposer is not a strategist. The strategist is the part that can say no — the part with the model of consequences and the cost function, that overrules a plausible-but-wrong suggestion.
+So be precise about what an LLM is. It's an excellent proposer — a strong prior over plausible next steps, drawn from everything it's read. It's a weak critic, and not a planner at all, because it has no calibrated model of consequences and no cost function it can trust. It generates candidates. It does not decide.
 
-I worked on a trading agent where several sub-agents proposed actions and a risk manager held a veto over all of them. The risk manager was the only part doing strategy, because it was the only part modeling consequence and cost. The others generated; one decided. That ratio is the lesson: generation is cheap and plural, judgment is singular and expensive.
+## Hierarchy is how the proposer earns a seat
+
+If the LLM only proposes, where does it sit? On top — and hierarchy is why that works.
+
+Flat planning doesn't scale: search over primitive actions explodes with the horizon, and you can't assign credit across thousands of steps. The fix, known since the options framework and feudal RL, is temporal abstraction — plan over coarse subgoals, and let each subgoal expand into its own short plan. Hafner's Director made this concrete inside a learned world model: a manager picks subgoals in the model's latent space, a worker achieves them, and both read the same model of consequences at two different altitudes. Abstract strategy on top, concrete dynamics underneath, one world model between them.
+
+That's the shape the field is groping toward: a language model proposing subgoals at the top — where abstraction and human-legible priors live, and where being wrong is cheap because you've only suggested something — over a world model and a cost function that test those subgoals against what would actually happen. Honesty check: nobody has cleanly built that end-to-end. Director's manager is a learned policy, not an LLM, and the seam between a symbolic subgoal and a latent world state is exactly where most "LLM + world model" proposals quietly break. The hierarchy is the right structure. The interface is still an open problem. I'd rather say that than pretend the architecture is solved.
+
+## When do you even need a world model?
+
+Here's the part that keeps this honest, because most successful "agents" today have no world model at all — and they're right not to.
+
+Claude Code doesn't predict consequences. It proposes an action, runs it, reads what actually happened, and reacts — a reactive loop with a to-do list it rewrites as it goes. For software, that's correct: the real environment is a free, fast, near-perfect simulator. Run the code, read the stack trace, revert if it's wrong. When feedback is that cheap and that reversible, imagining the consequence of an action is wasted effort — you can just take it and look. A learned world model would be slower and worse than reality.
+
+It flips when the feedback gets expensive. You can't crash a real robot ten thousand times to learn to walk, so robotics builds world models and acts in imagination — and the newest of these (Meta's V-JEPA 2) now plans real robot motions through a learned latent model. You can't run the chemistry a million times, so labs build surrogate models to decide which experiment is even worth running. You can't place the trade to find out it was wrong. The rule of thumb: the architecture follows the price of being wrong. Cheap, reversible mistakes — just try it. Expensive, irreversible mistakes — imagine first.
+
+But I won't oversell my own rule, because a clean counterexample sits right in the middle of it: MuZero. Go has a perfect, free, instant, reversible simulator — feedback could not be cheaper — and the winning system is still aggressively model-based, planning with tree search over a learned model. Why? Not for safety — for depth. When the horizon is long and the reward is sparse, you need lookahead, and lookahead needs a model no matter how cheap real feedback is. So the real axis has two dimensions: the price of being wrong and the depth of the horizon. Cheap feedback plus a short horizon is the only quadrant where you can safely skip the world model — which is exactly the quadrant a coding agent lives in. And even there, the moment an action turns irreversible — \`rm -rf\`, a production migration, an email that's already sent — the reactive loop sprouts a plan-mode and an approval gate, which is just a cost check wearing a different hat. Reversibility in software isn't a law of nature; it's something we built with version control and sandboxes, and where we couldn't build it, the model creeps back in.
+
+## Where the language model actually fits
+
+Not as the planner. As the proposer — and only that. It's read a lot of plans, so it's a good source of candidate subgoals. But a proposer is not a strategist. The strategist is the part that can say no: the part with a model of consequences and a cost function, that overrules a plausible-but-wrong suggestion.
+
+This pattern is everywhere once you look. AlphaGo's policy network proposes moves; the value function and the search decide. Safety-critical control puts a barrier function or a shield in front of the policy that edits any action heading somewhere unrecoverable. I once worked on a trading agent with several sub-agents generating ideas and a risk manager holding a binding veto over all of them — and the risk manager was the only part doing strategy, because it was the only part that modeled consequence and cost. Generation is cheap and plural; judgment is singular and expensive. The whole craft is in the part that says no.
 
 ## The takeaway
 
-If you want to build something that strategizes rather than something that talks about strategizing, the parts are clear: a model of consequences, a model of costs, a search that puts them together, organized as a hierarchy so it scales. The language model is, at best, the intern who suggests options. The planning happens in the part that knows what things cost.`,
+If you want to build something that strategizes rather than something that talks fluently about strategy, the parts are clear: a model of consequences, a function that says what's worth it, a search that puts them together, and a hierarchy so it scales. The language model is, at best, the intern who suggests options — fast, fluent, occasionally brilliant, and never handed the checkbook.
+
+And the part that matters most is the one we understand least. We can learn world models now; we can search. The cost function — what's actually worth it, what a mistake is really worth, when to preserve a future you can't yet see a use for — is the part we still mostly can't write down and have to learn. That's not a footnote to planning. That's the strategy.`,
 
     'writing/2026-04-06-bad-prompts.md': `# Real People Write Bad Prompts. Can AI Handle That?
 *Published 2026-04-06 · 5 min read*
