@@ -44,7 +44,7 @@ export const CAREER_COMMITS: CareerCommit[] = [
     date: '2026-04-08',
     hash: '7e1b9f0',
     type: 'feat',
-    message: 'shipped HAZE Benchmark v0 (first AI-safety original artifact)',
+    message: 'shipped HAZE Benchmark v0 (first original research artifact)',
     link: 'projects/haze-benchmark.md',
   },
   {
@@ -570,11 +570,11 @@ export const SKILL_EXTENSIONS: SkillExtension[] = [
     installed: true,
   },
 
-  // ---- AI Safety ----
+  // ---- Evaluation & Interpretability ----
   {
     id: 'ai-safety',
-    name: 'AI Safety Patterns',
-    category: 'safety',
+    name: 'Evaluation & Agent Control',
+    category: 'ml',
     version: 'v1.0',
     downloads: 2,
     rating: 4.0,
@@ -586,7 +586,7 @@ export const SKILL_EXTENSIONS: SkillExtension[] = [
   {
     id: 'interpretability',
     name: 'Interpretability',
-    category: 'safety',
+    category: 'ml',
     version: 'v0.6',
     downloads: 1,
     rating: 3.5,
@@ -664,7 +664,7 @@ export const PORTFOLIO_FS: PortfolioFS = {
   files: {
     'README.md': `# SaurabhJalendra
 
-> AI Research Engineer · world models, RL, AI safety · India-based, open to anywhere
+> Research Engineer · world models, RL, agentic systems · India-based, open to anywhere
 
 Hi, I'm **Saurabh Jalendra**. This portfolio is laid out as a working
 codebase — every page is a file you can open. Try:
@@ -681,14 +681,14 @@ codebase — every page is a file you can open. Try:
 
 ## here you'll find
 - /projects — 8 primary case studies + 5 side projects
-- /writing — 4 essays on world models, AI safety, and LLM programming
+- /writing — essays on world models, planning, and LLM programming
 - /now — what I'm working on this week
 - /contact — every way to reach me`,
 
     'about.md': `# About
 
-I'm Saurabh Jalendra — an AI research engineer working at the intersection of
-**world models, reinforcement learning, and empirical AI safety**. My M.Tech
+I'm Saurabh Jalendra — a Research Engineer working at the intersection of
+**world models, reinforcement learning, and agentic systems**. My M.Tech
 dissertation (BITS Pilani, defended March 2026) compared quantum-inspired vs
 classical training for DreamerV3-style world models across 200 experiments with
 Bonferroni-corrected significance testing. Day-to-day, I'm Co-Founder & AI Lead
@@ -700,7 +700,7 @@ eval harnesses.
 My research arc is using AI to understand and simulate the world: I started in
 computer vision (B.Tech + ISRO VR/photogrammetry internship), moved through
 applied ML at SKY AI, and now spend most of my time on RSSM world models, JAX
-infrastructure, and the safety patterns that show up when you put 8 LLM agents
+infrastructure, and the control patterns that show up when you put 8 LLM agents
 in a room and ask them to make a financial decision. From 2018 to 2024 I served
 as Director at my family's business, S K Jalendra Marketing Services Pvt Ltd.
 The MBA at NMIMS (2022–2024) made the family business operations more
@@ -712,7 +712,7 @@ systematic; the AI pivot crystallized in late 2024 with Klares.
 - **Production AI shipping** — Klares document intelligence (retrieval faithfulness 78% → 94% via re-rank + tenant pre-filter), International Citizen (vision-LLM ingestion across ~500+ document types, 24+ currencies, 3 languages), Trading Agent (8-agent orchestration with Risk-Manager veto)
 - **Agent orchestration** — Personal-Agents career command center coordinates a CV pipeline, portfolio site, LinkedIn workflow, and an LLM-Wiki knowledge base across 6 specialized subagents and 8+ skills (built on Claude Code)
 - **World models in JAX/Equinox** — Simulating Anything implements 192 simulation domains, RSSM world models, and symbolic regression (PySR/SINDy) recovering known physical laws with R² ≥ 0.999 on 11/14 core domains
-- **AI safety pattern thinking** — Risk-Manager-as-veto in the Trading Agent (analogous to scalable-oversight protocols), the HAZE Benchmark for measuring LLM clarification behavior with negative controls
+- **Evaluation + agent control** — Risk-Manager-as-veto in the Trading Agent, the HAZE Benchmark for measuring LLM clarification behavior with negative controls
 - **Operations + business judgment** — 6 years running a family marketing-services business (Jan 2018 – Mar 2024) before the AI pivot. I understand how revenue actually happens, not just how to write code.
 - **Credential-tracked study** — 9 LinkedIn-listed certifications (Mar–May 2026): all 4 DeepLearning.AI math foundations (Linear Algebra, Calculus, Mathematics for ML, Probability & Statistics for ML), the Anthropic Claude series (Claude 101, Claude Code 101, Claude Code in Action, AI Fluency)
 
@@ -1194,7 +1194,7 @@ I worked on a trading agent where several sub-agents proposed actions and a risk
 
 If you want to build something that strategizes rather than something that talks about strategizing, the parts are clear: a model of consequences, a model of costs, a search that puts them together, organized as a hierarchy so it scales. The language model is, at best, the intern who suggests options. The planning happens in the part that knows what things cost.`,
 
-    'writing/2026-04-06-introducing-haze.md': `# Introducing HAZE: A Benchmark for How AI Handles Bad Prompts
+    'writing/2026-04-06-introducing-haze.md': `# Real People Write Bad Prompts. Can AI Handle That?
 *Published 2026-04-06 · 5 min read*
 
 "Sort this list." "Make it better." "Fix the bug."
@@ -1431,7 +1431,7 @@ This is the gap between narrow AI and something approaching general intelligence
 
 The question is: can we build the architecture that handles the firehose?`,
 
-    'writing/2026-03-25-personal-ai-gemma4.md': `# My Research Agenda: Building a Personal AI on Gemma 4
+    'writing/2026-03-25-personal-ai-gemma4.md': `# Building a Personal AI That Thinks With You
 *Published 2026-03-25 · 7 min read*
 
 What if you had a personal AI that wasn't just a coding assistant — but a genuine thinking partner?
@@ -1513,7 +1513,7 @@ Data sources: The Stack v2 (3.3TB code), arXiv papers (2M+), Proof-Pile, OpenWeb
 
 **Phase 2: Multi-Capability Fine-Tuning** — Train the model to *apply* its knowledge across reasoning, brainstorming, science, and code. Using GSM8K and MATH for reasoning, SciQ and SciBench for science, CodeAlpaca for code, and synthetically generated brainstorm dialogues.
 
-**Phase 3: Agentic Alignment** — Train multi-step tool use: reason about a problem, write code to test it, run experiments, analyze results. Using tool-use trajectories, ReAct traces, and DPO for safety alignment.
+**Phase 3: Agentic Training** — Train multi-step tool use: reason about a problem, write code to test it, run experiments, analyze results. Using tool-use trajectories, ReAct traces, and DPO for reliable tool use.
 
 **Phase 4: Personal Specialization** — A LoRA adapter trained on my 51 repos, research notes, and Claude sessions. Cheap enough to run on my RTX 5090.
 
@@ -1565,7 +1565,7 @@ Next step: auditing Gemma 4's existing performance on my actual tasks and protot
     'writing/2026-03-21-llm-programming-language.md': `# I Think We're Programming Wrong
 *Published 2026-03-21 · 5 min read*
 
-Today I started exploring an idea that's been nagging me for weeks: what if we stopped writing code entirely?
+Here's an idea that's been nagging me for weeks: what if we stopped writing code entirely?
 
 Not in the "AI will replace programmers" way. In the "we're using the wrong abstraction" way.
 
@@ -1637,7 +1637,7 @@ I'm going to prototype this. A minimal runtime where you express intent and the 
 The last programming language won't have syntax. It'll have understanding.`,
 
     'experience.json': `{
-  "role": "AI Research Engineer · world models, RL, AI safety",
+  "role": "Research Engineer · world models, RL, agentic systems",
   "based_in": "Jaipur, India",
   "remote": true,
   "available_from": "2026-Q3",
@@ -1726,7 +1726,7 @@ takes up. (See [nownownow.com](https://nownownow.com) for the convention.)
 ## working on
 - **Phase 2 portfolio rewrite** — porting the IDE-shell design into Next.js 16 + App Router; this page lives inside that
 - **HAZE Benchmark v0.2** — closing the length-confound + BoW-shortcut on the dataset (Cohen's d=1.6 → target <0.3); 400 synthetic-validated + 390 real-sourced instances next
-- **Anthropic Fellows application prep** — RL workstream primary, AI Safety secondary
+- **Anthropic Fellows application prep** — RL + agentic-evaluation workstream
 - **Simulating Anything V4** — DreamerV4 RSSMv2, equation-to-sim parser, OpenFOAM/GROMACS/SUMO bridges, sim-to-real validation; ADR-0001 pivot to AMI-style cognitive architecture (Phase 1: discovery engine; Phases 2–4 stubbed)
 - **Klares 2026-Q2 release** — Docling adoption (replacing LlamaParse SaaS), ground-truth + synthetic-data evaluation harness, multi-document production dashboard, \`qa_matcher.py\` for filling new DDQs from prior corpus
 
@@ -1734,8 +1734,8 @@ takes up. (See [nownownow.com](https://nownownow.com) for the convention.)
 - Completed 7 certifications in March–May 2026 — DeepLearning.AI math foundations (Linear Algebra, Calculus, Mathematics for ML, Probability & Statistics for ML) + Anthropic AI Fluency & Claude Code series (Claude 101, Claude Code 101, Claude Code in Action)
 
 ## reading
-- *Natural Emergent Misalignment from Reward Hacking* (Anthropic, 2026) — central to the AI Safety workstream
-- *Deliberative Alignment* (OpenAI) and *CoT Monitorability* (Anthropic + collaborators) — pair well on the reasoning-trace safety question
+- *Natural Emergent Misalignment from Reward Hacking* (Anthropic, 2026) — on how reward hacking generalizes into emergent misalignment
+- *Deliberative Alignment* (OpenAI) and *CoT Monitorability* (Anthropic + collaborators) — pair well on the reasoning-trace question
 - *AlphaProof* (Nature, DeepMind) — formal proof + RL is the cleanest "model + search + verifier" loop in 2026
 - Aleph Prover and PutnamBench notes — for the formal-verification curriculum
 
@@ -1807,5 +1807,4 @@ const WRITING_ORDER = [
   'writing/2026-03-21-llm-programming-language.md',
 ];
 PORTFOLIO_FS.files['blog.md'] =
-  `# Writing\n\n> World models, planning, and AI safety.\n\n---\n\n` +
-  WRITING_ORDER.map((p) => PORTFOLIO_FS.files[p]).filter(Boolean).join('\n\n---\n\n');
+  WRITING_ORDER.map((p) => PORTFOLIO_FS.files[p]).filter(Boolean).join('\n\n');

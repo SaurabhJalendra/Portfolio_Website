@@ -8,7 +8,7 @@ import type { Theme, Themes } from '@/types/ide';
 
 export const IDE_THEMES: Themes = {
   midnight: {
-    name: 'Midnight (default)',
+    name: 'Midnight',
     accent: '#c8a4ff',
     chrome: {
       titlebar: '#16161a',
@@ -130,7 +130,7 @@ export const IDE_THEMES: Themes = {
   },
 
   paper: {
-    name: 'Paper (light)',
+    name: 'Paper (default)',
     accent: '#7c4ddc',
     chrome: {
       titlebar: '#f0ece2',

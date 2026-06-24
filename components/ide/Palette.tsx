@@ -338,9 +338,9 @@ function CommandPalette({
       { id: 'go.exp', icon: '{}', title: 'Go to experience.json', meta: 'open file', action: () => openFile('experience.json') },
       { id: 'go.git', icon: '⎇', title: 'Go to .gitconfig', meta: 'easter egg', action: () => openFile('.gitconfig') },
       // Themes
-      { id: 'th.midnight', icon: '◐', title: 'Theme · Midnight (default)', meta: 'change theme · current: ' + themeName, action: () => setTheme('midnight') },
+      { id: 'th.midnight', icon: '◐', title: 'Theme · Midnight', meta: 'change theme · current: ' + themeName, action: () => setTheme('midnight') },
       { id: 'th.phosphor', icon: '◐', title: 'Theme · Phosphor (terminal green)', meta: 'change theme', action: () => setTheme('phosphor') },
-      { id: 'th.paper', icon: '◐', title: 'Theme · Paper (light)', meta: 'change theme', action: () => setTheme('paper') },
+      { id: 'th.paper', icon: '◐', title: 'Theme · Paper (default)', meta: 'change theme', action: () => setTheme('paper') },
       { id: 'th.solar', icon: '◐', title: 'Theme · Solar (amber)', meta: 'change theme', action: () => setTheme('solar') },
       // View
       { id: 'view.assist', icon: 'AI', title: assistantVisible ? 'Hide assistant' : 'Show assistant', meta: 'view', action: () => setAssistantVisible((v) => !v) },

@@ -217,7 +217,7 @@ function Hero({ T }: { T: Theme }) {
           fontFamily: '"Geist Mono",monospace',
         }}
       >
-        AI Research Engineer · Co-Founder @ SKY AI · Jaipur, IST
+        Research Engineer · Co-Founder @ SKY AI · Jaipur, IST
       </div>
       <p
         style={{
@@ -227,7 +227,7 @@ function Hero({ T }: { T: Theme }) {
           color: T.chrome.fg,
         }}
       >
-        Working at the intersection of world models, reinforcement learning, and empirical AI safety. M.Tech dissertation on quantum-inspired RL world models (200 experiments, Bonferroni-corrected). Currently shipping production AI at SKY AI — Klares, International Citizen (Fila portfolio agent), and KAT GCS.
+        Working at the intersection of world models, reinforcement learning, and agentic systems. M.Tech dissertation on quantum-inspired RL world models (200 experiments, Bonferroni-corrected). Currently shipping production AI at SKY AI — Klares, International Citizen (Fila portfolio agent), and KAT GCS.
       </p>
     </div>
   );

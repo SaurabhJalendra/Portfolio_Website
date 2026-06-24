@@ -25,9 +25,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const SITE_URL = "https://saurabhjalendra.com";
-const TITLE = "Saurabh Jalendra — AI Research Engineer";
+const TITLE = "Saurabh Jalendra — Research Engineer";
 const DESCRIPTION =
-  "IDE-style portfolio for Saurabh Jalendra — AI Research Engineer working on world models, reinforcement learning, and empirical AI safety.";
+  "IDE-style portfolio for Saurabh Jalendra — Research Engineer working on world models, reinforcement learning, and agentic systems.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -54,4 +54,4 @@ Pre-emptively caught and disclosed in the README "Anti-Patterns We Avoided" sect
 The act of disclosing these openly is part of the research-quality signal.
 
 ## Why this matters
-This is the strongest single AI-safety / research artifact on Saurabh's public GitHub. Anthropic, OpenAI, DeepMind, Meta FAIR — all of them ship benchmarks; HAZE is the kind of clarification-behavior measurement that interpretability teams and oversight teams both need.
+This is the strongest single research artifact on Saurabh's public GitHub. Anthropic, OpenAI, DeepMind, Meta FAIR — all of them ship benchmarks; HAZE is the kind of clarification-behavior measurement that evaluation and interpretability teams need.

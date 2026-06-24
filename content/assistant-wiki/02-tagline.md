@@ -1,13 +1,13 @@
 # Tagline
 
 **Current portfolio README headline:**
-> AI Research Engineer · world models, RL, AI safety · India-based, open to anywhere
+> Research Engineer · world models, RL, agentic systems · India-based, open to anywhere
 
 **LinkedIn headline:**
 > Research Engineer • M.Tech AI/ML (BITS Pilani) • Co-Founder @ SKY AI
 
 **About-text framing (one-liner extracted from the portfolio `about.md`):**
-> AI research engineer working at the intersection of world models, reinforcement learning, and empirical AI safety.
+> Research Engineer working at the intersection of world models, reinforcement learning, and agentic systems.
 
 **Career-ops narrative headline:**
 > AI/ML Researcher specializing in world models, reinforcement learning, and scientific simulation.

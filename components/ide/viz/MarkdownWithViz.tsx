@@ -161,11 +161,15 @@ export function MarkdownWithViz({ body, openFile }: MarkdownWithVizProps) {
           <h1
             style={{
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-              fontSize: 34,
+              fontSize: 30,
               fontWeight: 700,
               color: T.chrome.fg,
-              margin: '14px 0 14px',
-              lineHeight: 1.15,
+              background: T.chrome.hoverBg,
+              borderLeft: '4px solid ' + T.accent,
+              padding: '16px 20px',
+              borderRadius: 8,
+              margin: '52px 0 20px',
+              lineHeight: 1.2,
               letterSpacing: '-0.012em',
             }}
           >
@@ -329,8 +333,11 @@ export function MarkdownWithViz({ body, openFile }: MarkdownWithVizProps) {
           <hr
             style={{
               border: 'none',
-              borderTop: '1px solid ' + T.chrome.border,
-              margin: '32px 0',
+              height: 3,
+              width: 72,
+              background: T.accent,
+              borderRadius: 999,
+              margin: '64px 0 8px',
             }}
           />
         ),

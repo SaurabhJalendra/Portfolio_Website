@@ -657,7 +657,6 @@ const CATEGORY_ORDER: SkillExtension['category'][] = [
   'web',
   'cloud',
   'infra',
-  'safety',
 ];
 
 function StarBar({ rating, color, faint }: { rating: number; color: string; faint: string }) {

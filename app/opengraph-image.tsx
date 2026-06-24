@@ -5,7 +5,7 @@ import { ImageResponse } from "next/og";
 // No static image asset exists, so this is rendered at build time.
 
 export const runtime = "edge";
-export const alt = "Saurabh Jalendra · AI Research Engineer";
+export const alt = "Saurabh Jalendra · Research Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -101,7 +101,7 @@ export default function OpengraphImage() {
               marginTop: 22,
             }}
           >
-            AI Research Engineer
+            Research Engineer
           </div>
           <div
             style={{
@@ -111,7 +111,7 @@ export default function OpengraphImage() {
               marginTop: 40,
             }}
           >
-            world models · reinforcement learning · empirical AI safety
+            world models · reinforcement learning · agentic systems
           </div>
         </div>
 

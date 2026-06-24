@@ -23,7 +23,7 @@ import MobileApp, { useIsMobile } from './Mobile';
 import { Resizer, LAYOUT_DIMS, LAYOUT_STORAGE_KEYS } from './Resizer';
 
 const INITIAL_TWEAKS: Tweaks = {
-  theme: 'midnight',
+  theme: 'paper',
   chrome: 'auto',
   motion: true,
   scanlines: false,
